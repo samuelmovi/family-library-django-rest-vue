@@ -16,7 +16,6 @@ from .models import Book, Location, Loan
 
 
 class LocationTestCase (TestCase):
-    print("[#] Location Model")
     test_fields = {
         'address': 'test address',
         'room': 'test room',
@@ -35,7 +34,6 @@ class LocationTestCase (TestCase):
         )
     
     def test_content(self):
-        print("[#] Location model: content retrieval")
         location = Location.objects.get(address="test address")
         for field in self.test_fields:
             # print("[#] Field: {}".format(field))
@@ -45,7 +43,6 @@ class LocationTestCase (TestCase):
 
 
 class BookTestCase(TestCase):
-    print("[#] Book Model")
     test_fields = {
         'title': 'test title',
         'author': 'test author',
@@ -83,7 +80,6 @@ class BookTestCase(TestCase):
         )
         
     def test_content(self):
-        print("[#] Book model: content retrieval")
         book = Book.objects.get(title="test title")
         self.test_fields['location_id'] = Location.objects.get(address='address').id
         for field in self.test_fields:
@@ -94,7 +90,6 @@ class BookTestCase(TestCase):
 
 
 class LoanTestCase(TestCase):
-    print("[#] Loan Model")
     test_fields = {
         'book_id': '',
         'lender': 'test lender',
@@ -124,7 +119,6 @@ class LoanTestCase(TestCase):
         )
     
     def test_content(self):
-        print("[#] Loan model: content retrieval")
         loan = Loan.objects.get(lender="test lender")
         self.test_fields['book_id'] = Book.objects.get(title='title').id
         for field in self.test_fields.keys():
@@ -249,7 +243,7 @@ class LibraryTestCase(APITestCase):
         self.assertTrue(len(res.data)>0)
     
     def test_modify_location(self):
-        res = self.client.put('/api/locations/{}/'.format(self.location.pk), data=self.location_fields)
+        res = self.client.put('/api/locations/{}/'.format(self.location.pk), data=self.location_fields_mod)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         # TODO: assert location fields have been modified
     
@@ -271,7 +265,9 @@ class LibraryTestCase(APITestCase):
         self.assertTrue(len(res.data)>0)
     
     def test_return_loan(self):
-        res = self.client.put('/api/loans/{}/'.format(self.loan.pk), data={'returned': 'true'})
+        self.loan_fields['returned'] = 'true'
+        self.loan_fields['book'] = str(self.book.pk)
+        res = self.client.put('/api/loans/{}/'.format(self.loan.pk), data=self.loan_fields)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         # TODO: assert loan fields have been modified
     
