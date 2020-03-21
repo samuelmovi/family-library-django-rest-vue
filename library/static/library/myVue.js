@@ -356,6 +356,25 @@ new Vue({
         // Loans
         addLoan: function(loan) {
           this.loading = true;
+          // set the book as loaned
+          this.$http.get(`/api/books/${loan.book}/`)
+            .then((response) => {
+              book = response.data;
+              book.loaned = true;
+              this.$http.put(`/api/books/${book.id}/`, book)
+                .then((response) => {
+                  this.getBooks();
+                })
+                .catch((err) => {
+                  this.loading = false;
+                  console.log(err);
+              });
+            })
+            .catch((err) => {
+            this.loading = false;
+            console.log(err);
+          });          
+          // register loan
           loan.lender = this.username;
           this.$http.post('/api/loans/', loan)
               .then((response) => {
@@ -387,8 +406,24 @@ new Vue({
         },
         returnLoan: function(loan) {
           this.loading = true;
-          // set book as returned=true
-
+          // set the book as loaned
+          this.$http.get(`/api/books/${loan.book}/`)
+            .then((response) => {
+              book = response.data;
+              book.loaned = false;
+              this.$http.put(`/api/books/${book.id}/`, book)
+                .then((response) => {
+                  this.getBooks();
+                })
+                .catch((err) => {
+                  this.loading = false;
+                  console.log(err);
+              });
+            })
+            .catch((err) => {
+            this.loading = false;
+            console.log(err);
+          });
           // register return
           loan.return_date = new Date().toISOString();
           this.$http.put(`/api/loans/${loan.id}/`, loan)
