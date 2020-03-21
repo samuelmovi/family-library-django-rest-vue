@@ -168,14 +168,20 @@ class LibraryTestCase(APITestCase):
         'details': string1,
         'username': username1,
     }
-    location_fields = {
+    location_fields_mod = {
         'address': string2,
         'room': string2,
         'furniture': string2,
         'details': string2,
     }
+    loan_fields = {
+        'borrower': 'BOOK_THIEF',
+        'lender': username1,
+        'book': None,
+    }
 
     def setUp(self):
+        print('[#] Setting up...\n')
         self.client = APIClient()
         self.location = Location.objects.create(
             address=self.string2,
@@ -196,12 +202,19 @@ class LibraryTestCase(APITestCase):
             loaned=False,
             username=self.username1,
         )
+        self.loan = Loan.objects.create(
+            borrower=self.string1,
+            lender=self.string2,
+            book=self.book,
+        )
 
-    
     def tearDown(self):
+        print('[#] Tearing down...\n')
+        Loan.objects.all().delete()
         Book.objects.all().delete()
         Location.objects.all().delete()
-        Loan.objects.all().delete()
+       
+    
 
     # BOOK TESTS
     def test_create_book(self):
@@ -228,7 +241,7 @@ class LibraryTestCase(APITestCase):
     def test_create_location(self):
         res = self.client.post('/api/locations/', data=self.location_fields)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        # TODO: assert book has been created
+        # TODO: assert location has been created
     
     def test_get_all_location(self):
         res = self.client.get('/api/locations/{}/'.format(self.location.pk))
@@ -238,9 +251,27 @@ class LibraryTestCase(APITestCase):
     def test_modify_location(self):
         res = self.client.put('/api/locations/{}/'.format(self.location.pk), data=self.location_fields)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        # TODO: assert book fields have been modified
+        # TODO: assert location fields have been modified
     
     def test_delete_location(self):
         res = self.client.delete('/api/locations/{}/'.format(self.location.pk))
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        # TODO: assert book has been deleted
+        # TODO: assert location has been deleted
+
+    # LOAN TESTS
+    def test_create_loan(self):
+        recipient = 'borrower'
+        res = self.client.post('/api/loans/', data={'borrower': 'BOOK_THIEF', 'lender': self.username1, 'book': self.book.pk})
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        # TODO: assert loan has been created
+    
+    def test_get_all_loans(self):
+        res = self.client.get('/api/loans/{}/'.format(self.location.pk))
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertTrue(len(res.data)>0)
+    
+    def test_return_loan(self):
+        res = self.client.put('/api/loans/{}/'.format(self.loan.pk), data={'returned': 'true'})
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        # TODO: assert loan fields have been modified
+    
