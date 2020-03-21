@@ -38,7 +38,7 @@ class Loan(models.Model):
     lender = models.CharField(max_length=100)
     borrower = models.CharField(max_length=100)
     loan_date = models.DateTimeField('date of loan', auto_now_add=True)
-    return_date = models.DateTimeField('date of return', null=True, auto_now=True)
+    return_date = models.DateTimeField('date of return', null=True)
     
     def __str__(self):
         return self.recipient

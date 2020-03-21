@@ -2,31 +2,32 @@ new Vue({
     delimiters: ['{$', '$}'],
     el: '#app',
     data: {
-        page_title: 'My Library Manager',
-        books: [],
-        book: {},
-        newBook: {},
-        locations: [],
-        location: {},
-        newLocation: {},
-        loans: [],
-        loan: {},
-        newLoan: {},
-        homeVisible: true,
-        booksVisible: false,
-        allBooksVisible: false,
-        newBookVisible: false,
-        updateBookVisible: false,
-        deleteBookVisible: false,
-        locationsVisible: false,
-        allLocationsVisible: false,
-        newLocationVisible: false,
-        updateLocationVisible: false,
-        deleteLocationVisible: false,
-        loansVisible: false,
-        allLoansVisible: false,
-        newLoanVisible: false,
-        returnLoanVisible: false,
+      username: 'user1',
+      page_title: 'My Library Manager',
+      books: [],
+      book: {},
+      newBook: {},
+      locations: [],
+      location: {},
+      newLocation: {},
+      loans: [],
+      loan: {},
+      newLoan: {},
+      homeVisible: true,
+      booksVisible: false,
+      allBooksVisible: false,
+      newBookVisible: false,
+      updateBookVisible: false,
+      deleteBookVisible: false,
+      locationsVisible: false,
+      allLocationsVisible: false,
+      newLocationVisible: false,
+      updateLocationVisible: false,
+      deleteLocationVisible: false,
+      loansVisible: false,
+      allLoansVisible: false,
+      newLoanVisible: false,
+      returnLoanVisible: false,
     },
     http: {
       root: 'http://localhost:8000/',
@@ -355,6 +356,7 @@ new Vue({
         // Loans
         addLoan: function(loan) {
           this.loading = true;
+          loan.lender = this.username;
           this.$http.post('/api/loans/', loan)
               .then((response) => {
                 this.newLoan = {};
@@ -385,7 +387,10 @@ new Vue({
         },
         returnLoan: function(loan) {
           this.loading = true;
-          loan.returned = true
+          // set book as returned=true
+
+          // register return
+          loan.return_date = new Date().toISOString();
           this.$http.put(`/api/loans/${loan.id}/`, loan)
               .then((response) => {
                 this.loading = false;

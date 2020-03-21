@@ -257,7 +257,7 @@
           </tr>
         <tr v-for="loan in loans" class="w3-white">
           <td>{$ loan.book $}</td>
-          <td>{$ loan.recipient $}</td>
+          <td>{$ loan.borrower $}</td>
           <td>{$ loan.loan_date $}</td>
           <td>{$ loan.return_date $}</td>
         </tr>
@@ -272,9 +272,9 @@
         <fieldset class="w3-container vue-form">
             {% csrf_token %}
           <label>Recipient</label>
-          <input v-model="newLoan.recipient" class="w3-input" type="text" name="recipient">
+          <input v-model="newLoan.borrower" class="w3-input" type="text" name="borrower">
           <label >Book</label>
-          <select v-model="newLoan.book" class="w3-input" name="book_id">
+          <select v-model="newLoan.book" class="w3-input" name="book">
             <option v-for="book in books" :value="book.id">{$ book.author $} / {$ book.title $}</option>\n
           </select>
           <br>
@@ -289,19 +289,20 @@
       <div class="w3-container">
           <h2 align="center" >{% trans 'Register Return with Database' %}</h2>
       </div>
-      <div class="w3-container">
-        <fieldset class="w3-container vue-form">
-            {% csrf_token %}
-          <label>Recipient</label>
-          <input v-model="loan.recipient" class="w3-input" type="text" name="recipient" disabled>
-          <label >Book</label>
-          <input v-model="loan.book" class="w3-input" type="text" name="book" disabled>
-          <!-- <input v-model="books[loan.book].title" class="w3-input" type="text" name="book" disabled> -->
-          <br>
-          <button v-on:click="returnLoan(loan)"  class="medium-font w3-button w3-green w3-block w3-hover-black">Return Loan</button>
-          <br>
-        </fieldset>
-      </div>fieldset
+      <table class="w3-table-all w3-hoverable">
+        <tr class="w3-cyan">
+          <th>Book</th>
+          <th>Recipient</th>
+          <th>Loan Date</th>
+          <th>Return Date</th>
+        </tr>
+        <tr v-for="loan in loans" v-on:click="returnLoan(loan)" class="w3-white">
+          <td>{$ loan.book $}</td>
+          <td>{$ loan.borrower $}</td>
+          <td>{$ loan.loan_date $}</td>
+          <td>{$ loan.return_date $}</td>
+        </tr>
+      </table>
       <br>
     </div>
 
