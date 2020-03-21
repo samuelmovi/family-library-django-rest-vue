@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans page_title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'library/style.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+    <!-- VueJs stuff -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
+    
+<div id="app">
+  <header>
+    <div>{$ page_title $}</div>
+    
+    <!-- NAVBAR -->
+    <div class=" navbar w3-cell-row w3-black">
+        <div v-on:click="showAllBooks" class="w3-container w3-cell w3-btn w3-mobile w3-hover-blue"
+           >Books</div>
+        <a v-on:click="showAllLocations" class="w3-container w3-cell w3-btn w3-mobile w3-hover-blue"
+           >Locations</a>
+        <a v-on:click="showAllLoans" class="w3-container w3-cell w3-btn w3-mobile w3-hover-blue" >Loans</a>
+    </div>
+    
+  </header>
+ 
+    
+    <div id="home" v-show="homeVisible" class=" home w3-container w3-card-4 w3-margin-top">
+        <div class="user-info" >
+        <p >{% trans 'Hello user' %}</p>
+        <p>{% trans 'Summary of your book collection' %}:</p>
+        <ul>
+            <li>{% trans 'Total books' %}: {$ books.length $}</li>
+            <li>{% trans 'Pending loans' %}: {$ loans.length $}</li>
+        </ul>
+        <br/>
+        </div>
+        <br/>
+        <a class="logout" href="#">{% trans 'Log out' %}</a>
+    </div>
+ <!-- BOOKS -->
+    <div id="showBooks" v-show="allBooksVisible"  class="w3-margin small-font">
+        <h3 align="center">All Books in Library</h3>
+        <table id="books" class="w3-table-all w3-hoverable ">
+          <tr class="w3-cyan">
+            <th class="w3-hover-light-blue ">Title</th>
+            <th class="w3-hover-light-blue">Author</th>
+            <th class="w3-hover-light-blue">Genre</th>
+            <th class="w3-hover-light-blue">Publisher</th>
+            <th class="w3-hover-light-blue">Publish Date</th>
+            <th class="w3-hover-light-blue">Purchase Date</th>
+            <th class="w3-hover-light-blue">Loaned</th>
+          </tr>
+          <tr v-for="book in books" v-on:click="bookDetails(book)" class="book-row w3-white w3-hover-pale-red">
+              <td>{$ book.title $}</td>
+              <td>{$ book.author $}</td>
+              <td>{$ book.genre $}</td>
+              <td>{$ book.publisher $}</td>
+              <td>{$ book.publish_date $}</td>
+              <td>{$ book.purchase_date $}</td>
+              <td>{$ book.loaned $}</td>
+          </tr>
+        </table>
+    </div>
+    
+    <div id="newBook" v-show="newBookVisible"  class="w3-container small-font w3-teal">
+      <div class="w3-container">
+          <h2 align="center" >{% trans 'Add Book to Database' %}</h2>
+      </div>
+      <div class="w3-container">
+        <fieldset class="w3-container vue-form" >
+            {% csrf_token %}
+          <label>Title</label>
+          <input v-model="newBook.title" class="w3-input" type="text" name="title">
+          <label >Author</label>
+          <input v-model="newBook.author" class="w3-input" type="text" name="author">
+          <label>Genre</label>
+          <input v-model="newBook.genre" class="w3-input" type="text" name="genre">
+          <label>Publisher</label>
+          <input v-model="newBook.publisher" class="w3-input" type="text" name="publisher">
+          <label>ISBN</label>
+          <input v-model="newBook.isbn" class="w3-input" type="text" name="isbn">
+          <label >Publish date</label>
+          <input v-model="newBook.publish_date" class="w3-input" type="text" name="publish_date">
+          <label>Purchase date</label>
+          <input v-model="newBook.purchase_date" class="w3-input" type="text" name="purchase_date">
+          <label>Location</label>
+          <select v-model="newBook.location" class="w3-input" name="location_id">
+            <option v-for="location in locations" :value="location.id">{$ location.room $}</option>\n
+          </select>
+          <br>
+          <button v-on:click="addBook" class="medium-font w3-button w3-green w3-block w3-hover-black">Add New Book</button>
+          <br>
+        </fieldset>
+      </div>
+      <br>
+    </div>
+    
+    <div id="updateBook" v-show="updateBookVisible"  class="w3-container small-font w3-teal">
+      <div class="w3-container">
+          <h2 align="center" >{% trans 'Update Book Info' %}</h2>
+      </div>
+      <div class="w3-container">
+        <fieldset class="w3-container vue-form">
+            {% csrf_token %}
+          <label>Title</label>
+          <input v-model="book.title" class="w3-input" type="text" name="title">
+          <label >Author</label>
+          <input v-model="book.author" class="w3-input" type="text" name="author">
+          <label>Genre</label>
+          <input v-model="book.genre" class="w3-input" type="text" name="genre">
+          <label>Publisher</label>
+          <input v-model="book.publisher" class="w3-input" type="text" name="publisher">
+          <label>ISBN</label>
+          <input v-model="book.isbn" class="w3-input" type="text" name="isbn">
+          <label >Publish date</label>
+          <input v-model="book.publish_date" class="w3-input" type="text" name="publish_date">
+          <label>Purchase date</label>
+          <input v-model="book.purchase_date" class="w3-input" type="text" name="purchase_date">
+          <label>Location</label>
+          <select v-model="book.location" class="w3-input" name="location_id">
+            <option v-for="location in locations" :value="location.id" selected="{$ (book.location==location.id) ? true : false $}">{$ location.address
+                $} / {$
+                location.room  $} / {$ location.furniture  $}</option>\n
+          </select>
+          <br>
+          <button v-on:click="updateBook(book)"  class="medium-font w3-button w3-green w3-block w3-hover-black">Update Book Info</button>
+          <br>
+        </fieldset>
+      </div>
+      <br>
+    </div>
+    
+    <div id="deleteBooks" v-show="deleteBookVisible"  class="w3-margin small-font">
+        <h3 align="center">Delete Books from Library</h3>
+        <table class="w3-table-all w3-hoverable ">
+          <tr class="w3-cyan">
+            <th class="w3-hover-light-blue ">Title</th>
+            <th class="w3-hover-light-blue">Author</th>
+            <th class="w3-hover-light-blue">Genre</th>
+            <th class="w3-hover-light-blue">Publisher</th>
+            <th class="w3-hover-light-blue">Publish Date</th>
+            <th class="w3-hover-light-blue">Purchase Date</th>
+            <th class="w3-hover-light-blue">Loaned</th>
+          </tr>
+          <tr v-for="book in books" v-on:click="deleteBook(book)" class="book-row w3-white w3-hover-pale-red">
+              <td>{$ book.title $}</td>
+              <td>{$ book.author $}</td>
+              <td>{$ book.genre $}</td>
+              <td>{$ book.publisher $}</td>
+              <td>{$ book.publish_date $}</td>
+              <td>{$ book.purchase_date $}</td>
+              <td>{$ book.loaned $}</td>
+          </tr>
+        </table>
+    </div>
+
+<!-- LOCATIONS -->
+    <div id="showLocations" v-show="allLocationsVisible" class="w3-margin small-font">
+        <table id="locations" class="w3-table-all w3-hoverable ">
+          <tr class="w3-cyan">
+            <th class="w3-hover-light-blue ">Address</th>
+            <th class="w3-hover-light-blue">Room</th>
+            <th class="w3-hover-light-blue">Furniture</th>
+            <th class="w3-hover-light-blue">Details</th>
+          </tr>
+          <tr v-for="location in locations" v-on:click="locationDetails(location)"  class="book-row w3-white w3-hover-pale-red">
+              <td>{$ location.address $}</td>
+              <td>{$ location.room $}</td>
+              <td>{$ location.furniture $}</td>
+              <td>{$ location.details $}</td>
+          </tr>
+        </table>
+    </div>
+    
+    <div id="newLocation" v-show="newLocationVisible"  class="w3-container small-font w3-teal">
+      <div class="w3-container">
+          <h2 align="center" >{% trans 'Add Location to Database' %}</h2>
+      </div>
+      <div class="w3-container">
+        <fieldset class="w3-container vue-form">
+            {% csrf_token %}
+          <label>Address</label>
+          <input v-model="newLocation.address" class="w3-input" type="text" name="title">
+          <label >Room</label>
+          <input v-model="newLocation.room" class="w3-input" type="text" name="author">
+          <label>Furniture</label>
+          <input v-model="newLocation.furniture" class="w3-input" type="text" name="genre">
+          <label>Details</label>
+          <input v-model="newLocation.details" class="w3-input" type="text" name="publisher">
+          <br>
+          <button v-on:click="addLocation(newLocation)" class="medium-font w3-button w3-green w3-block w3-hover-black">Add New Location</button>
+          <br>
+        </fieldset>
+      </div>
+      <br>
+    </div>
+    
+    <div id="updateLocation" v-show="updateLocationVisible"  class="w3-container small-font w3-teal">
+      <div class="w3-container">
+          <h2 align="center" >{% trans 'Update Location Info' %}</h2>
+      </div>
+      <div class="w3-container">
+        <fieldset class="w3-container vue-form">
+            {% csrf_token %}
+          <label>Address</label>
+          <input v-model="location.address" class="w3-input" type="text" name="address">
+          <label >Room</label>
+          <input v-model="location.room" class="w3-input" type="text" name="room">
+          <label>Furniture</label>
+          <input v-model="location.furniture" class="w3-input" type="text" name="furniture">
+          <label>Details</label>
+          <input v-model="location.details" class="w3-input" type="text" name="details">
+          <br>
+          <button v-on:click="updateLocation(location)" class="medium-font w3-button w3-green w3-block w3-hover-black">Update Location Info</button>
+          <br>
+        </fieldset>
+      </div>
+      <br>
+    </div>
+    
+    <div id="deleteLocations" v-show="deleteLocationVisible"  class="w3-margin small-font">
+      <h3 align="center">Delete Location from Library</h3>
+      <table id="locations" class="w3-table-all w3-hoverable ">
+        <tr class="w3-cyan">
+          <th class="w3-hover-light-blue ">Address</th>
+          <th class="w3-hover-light-blue">Room</th>
+          <th class="w3-hover-light-blue">Furniture</th>
+          <th class="w3-hover-light-blue">Details</th>
+        </tr>
+        <tr v-for="location in locations" v-on:click="deleteLocation(location)"  class="book-row w3-white w3-hover-pale-red">
+            <td>{$ location.address $}</td>
+            <td>{$ location.room $}</td>
+            <td>{$ location.furniture $}</td>
+            <td>{$ location.details $}</td>
+        </tr>
+      </table>
+  </div>
+
+<!-- LOANS -->
+    <div id="showLoans" v-show="allLoansVisible" class="w3-margin small-font">
+      <table class="w3-table-all w3-hoverable">
+          <tr class="w3-cyan">
+            <th>Book</th>
+            <th>Recipient</th>
+            <th>Loan Date</th>
+            <th>Return Date</th>
+          </tr>
+        <tr v-for="loan in loans" class="w3-white">
+          <td>{$ loan.book $}</td>
+          <td>{$ loan.recipient $}</td>
+          <td>{$ loan.loan_date $}</td>
+          <td>{$ loan.return_date $}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div id="newLoan" v-show="newLoanVisible"  class="w3-container small-font w3-teal">
+      <div class="w3-container">
+          <h2 align="center" >{% trans 'Register Loan with Database' %}</h2>
+      </div>
+      <div class="w3-container">
+        <fieldset class="w3-container vue-form">
+            {% csrf_token %}
+          <label>Recipient</label>
+          <input v-model="newLoan.recipient" class="w3-input" type="text" name="recipient">
+          <label >Book</label>
+          <select v-model="newLoan.book" class="w3-input" name="book_id">
+            <option v-for="book in books" :value="book.id">{$ book.author $} / {$ book.title $}</option>\n
+          </select>
+          <br>
+          <button v-on:click="addLoan(newLoan)" class="medium-font w3-button w3-green w3-block w3-hover-black">Register Loan</button>
+          <br>
+        </fieldset>
+      </div>
+      <br>
+    </div>
+
+    <div id="returnLoan" v-show="returnLoanVisible"  class="w3-container small-font w3-teal">
+      <div class="w3-container">
+          <h2 align="center" >{% trans 'Register Return with Database' %}</h2>
+      </div>
+      <div class="w3-container">
+        <fieldset class="w3-container vue-form">
+            {% csrf_token %}
+          <label>Recipient</label>
+          <input v-model="loan.recipient" class="w3-input" type="text" name="recipient" disabled>
+          <label >Book</label>
+          <input v-model="loan.book" class="w3-input" type="text" name="book" disabled>
+          <!-- <input v-model="books[loan.book].title" class="w3-input" type="text" name="book" disabled> -->
+          <br>
+          <button v-on:click="returnLoan(loan)"  class="medium-font w3-button w3-green w3-block w3-hover-black">Return Loan</button>
+          <br>
+        </fieldset>
+      </div>fieldset
+      <br>
+    </div>
+
+<!-- FOOTER -->
+    <div v-show="booksVisible" class=" bottom-bar w3-cell-row w3-black">
+        <a v-on:click="showNewBook" class="bottom_link w3-container w3-cell w3-btn w3-mobile w3-hover-green">New</a>
+        <a v-on:click="showDeleteBook" class="bottom_link w3-container w3-cell w3-btn w3-mobile w3-hover-green">Delete </a>
+    </div>
+    <div v-show="locationsVisible" class=" bottom-bar w3-cell-row w3-black">
+        <a v-on:click="showNewLocation" class="bottom_link w3-container w3-cell w3-btn w3-mobile w3-hover-green">New</a>
+        <a v-on:click="showDeleteLocation" class="bottom_link w3-container w3-cell w3-btn w3-mobile w3-hover-green">Delete</a>
+    </div>
+    <div v-show="loansVisible" class=" bottom-bar w3-cell-row w3-black">
+      <a v-on:click="showNewLoan" class="bottom_link w3-container w3-cell w3-btn w3-mobile w3-hover-green">New</a>
+      <a v-on:click="showReturnLoan" class="bottom_link w3-container w3-cell w3-btn w3-mobile w3-hover-green">Return</a>
+    </div>
+
+</div>
+    <script type="text/javascript" src = "{% static 'library/script.js' %}"></script>
+    <script type="text/javascript" src = "{% static 'library/myVue.js' %}"></script>
+</body>
+
+</html>
