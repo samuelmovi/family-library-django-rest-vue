@@ -7,7 +7,7 @@ class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
     # permission_classes = [permissions.AllowAny]
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class BookViewSet(viewsets.ModelViewSet):

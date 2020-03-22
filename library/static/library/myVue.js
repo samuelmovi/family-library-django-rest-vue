@@ -38,13 +38,19 @@ new Vue({
     methods: {
         // JWT Auth
         async fetchJWT() {
-          this.$http.post('/auth-jwt/',{username: this.username, password: this.password})
+          if (localStorage.jwt == null){
+            this.$http.post('/auth-jwt/',{username: this.username, password: this.password})
               .then((response) => {
                 this.jwt = response.data['token'];
+                localStorage.jwt = this.jwt;
               })
               .catch((err) => {
                 console.log(err);
               })
+          }
+          else{
+            this.jwt = localStorage.jwt;
+          }
         },
         async postWithJWT(url, payload) {
           const res = await fetch(url, {
