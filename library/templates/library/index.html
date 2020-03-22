@@ -14,10 +14,19 @@
 </head>
 
 <body>
-    <!-- VueJs stuff -->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
-    
+  <!-- VueJs stuff -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
+
+{% if user.is_authenticated is False %}
+<!-- LOGIN -->
+{% extends "rest_framework/login_base.html" %}
+
+{% block branding %}
+    <h3 style="margin: 0 0 20px;">My Site Name</h3>
+{% endblock %}
+
+{% else %}
 <div id="app">
   <header>
     <div>{$ jwt $}</div>
@@ -319,6 +328,9 @@
       <a v-on:click="showNewLoan" class="bottom_link w3-container w3-cell w3-btn w3-mobile w3-hover-green">New</a>
       <a v-on:click="showReturnLoan" class="bottom_link w3-container w3-cell w3-btn w3-mobile w3-hover-green">Return</a>
     </div>
+
+{% endif %}
+
 
 </div>
     <script type="text/javascript" src = "{% static 'library/script.js' %}"></script>
