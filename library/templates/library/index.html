@@ -19,17 +19,12 @@
   <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
 
 {% if user.is_authenticated is False %}
-<!-- LOGIN -->
-{% extends "rest_framework/login_base.html" %}
-
-{% block branding %}
-    <h3 style="margin: 0 0 20px;">My Site Name</h3>
-{% endblock %}
-
+  <!-- LOGIN -->
+  {% include 'library/login.html' %}
 {% else %}
 <div id="app">
   <header>
-    <div>{$ jwt $}</div>
+    <div>{$ page_title $}</div>
     
     <!-- NAVBAR -->
     <div class=" navbar w3-cell-row w3-black">
