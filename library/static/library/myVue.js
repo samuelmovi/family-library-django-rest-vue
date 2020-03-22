@@ -2,7 +2,8 @@ new Vue({
     delimiters: ['{$', '$}'],
     el: '#app',
     data: {
-      username: 'user1',
+      username: 'sam',
+      password: 'aifol',
       jwt: '',
       page_title: 'My Library Manager',
       books: [],
@@ -37,8 +38,13 @@ new Vue({
     methods: {
         // JWT Auth
         async fetchJWT() {
-          const res = await fetch(`/api/token?username=${this.username}&password=${this.password}`);
-          this.jwt = await res.text();
+          this.$http.post('/auth-jwt/',{username: this.username, password: this.password})
+              .then((response) => {
+                this.jwt = response.data['token'];
+              })
+              .catch((err) => {
+                console.log(err);
+              })
         },
         async postWithJWT(url, payload) {
           const res = await fetch(url, {
@@ -259,7 +265,7 @@ new Vue({
         // Books
         addBook: function() {
           this.loading = true;
-          this.$http.post('/api/books/',this.newBook, {emulateJSON: true})
+          this.$http.post('/api/books/',this.newBook)
               .then((response) => {
                 this.loading = false;
                 this.getBooks();
@@ -467,8 +473,9 @@ new Vue({
         },
     },
     mounted: function(){
-        this.getBooks();
-        this.getLocations();
-        this.getLoans();
+      this.fetchJWT();
+      this.getBooks();
+      this.getLocations();
+      this.getLoans();
     }
 })
