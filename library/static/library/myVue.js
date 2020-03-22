@@ -405,38 +405,41 @@ new Vue({
           this.showUpdateLoan();
         },
         returnLoan: function(loan) {
-          this.loading = true;
-          // set the book as loaned
-          this.$http.get(`/api/books/${loan.book}/`)
-            .then((response) => {
-              book = response.data;
-              book.loaned = false;
-              this.$http.put(`/api/books/${book.id}/`, book)
+          confirmation = confirm('Book "' + loan.book + '" returned?');
+          if (confirmation == true){
+            this.loading = true;
+            // set the book as loaned
+            this.$http.get(`/api/books/${loan.book}/`)
+              .then((response) => {
+                book = response.data;
+                book.loaned = false;
+                this.$http.put(`/api/books/${book.id}/`, book)
+                  .then((response) => {
+                    this.getBooks();
+                  })
+                  .catch((err) => {
+                    this.loading = false;
+                    console.log(err);
+                });
+              })
+              .catch((err) => {
+              this.loading = false;
+              console.log(err);
+            });
+            // register return
+            loan.return_date = new Date().toISOString();
+            this.$http.put(`/api/loans/${loan.id}/`, loan)
                 .then((response) => {
-                  this.getBooks();
+                  this.loading = false;
+                  this.loan = {};
+                  this.getLoans();
+                  this.showAllLoans();
                 })
                 .catch((err) => {
                   this.loading = false;
                   console.log(err);
-              });
-            })
-            .catch((err) => {
-            this.loading = false;
-            console.log(err);
-          });
-          // register return
-          loan.return_date = new Date().toISOString();
-          this.$http.put(`/api/loans/${loan.id}/`, loan)
-              .then((response) => {
-                this.loading = false;
-                this.loan = {};
-                this.getLoans();
-                this.showAllLoans();
-              })
-              .catch((err) => {
-                this.loading = false;
-                console.log(err);
-              })
+                })
+            }
         },
     },
     mounted: function(){
