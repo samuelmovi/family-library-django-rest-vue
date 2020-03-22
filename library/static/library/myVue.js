@@ -3,7 +3,7 @@ new Vue({
     el: '#app',
     data: {
       username: 'user1',
-      jwt = '',
+      jwt: '',
       page_title: 'My Library Manager',
       books: [],
       book: {},
