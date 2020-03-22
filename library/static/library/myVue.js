@@ -34,6 +34,11 @@ new Vue({
       headers: {}
     },
     methods: {
+        // JWT Auth
+        async fetchJWT() {
+          const res = await fetch(`/api/token?username=${this.username}&password=${this.password}`);
+          this.jwt = await res.text();
+        },
         // UI Controllers
         // Books
         showAllBooks: function(){

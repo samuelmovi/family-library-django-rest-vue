@@ -19,6 +19,7 @@ app_name = 'library'
 
 urlpatterns = [
     # post username:password to get token
-    url(r'token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'), 
+    url(r'token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    url(r'token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'), 
     url(r'^', include(router.urls))
 ]
