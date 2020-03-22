@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - check book loaned status before loaning
 - make tests more thorough
-- make template that checks for authentication, and redirects accordingly
 
 
 ## 2020-03-22
 ### Added
+- make template that checks for authentication, and redirects accordingly
 
 ### Changed
 

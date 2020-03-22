@@ -53,13 +53,18 @@ new Vue({
           }
         },
         async postWithJWT(url, payload) {
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: new Headers({
-              Authorization: `JWT: ${this.jwt}`
-            }),
-            data: payload,
-          });
+          this.loading = true;
+          this.$http.post(url, payload, {headers: {Authorization: `JWT ${this.jwt}`}})
+              .then((response) => {
+                this.newLocation = {};
+                this.loading = true;
+                this.getLocations();
+                this.showAllLocations();
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
         },
         async getWithJWT(url, payload) {
           const res = await fetch(url, {
@@ -330,18 +335,19 @@ new Vue({
         },
         // Locations
         addLocation: function(location) {
-          this.loading = true;
-          this.$http.post('/api/locations/', location)
-              .then((response) => {
-                this.newLocation = {};
-                this.loading = true;
-                this.getLocations();
-                this.showAllLocations();
-              })
-              .catch((err) => {
-                this.loading = false;
-                console.log(err);
-              })
+          this.postWithJWT('/api/locations/', location)
+          // this.loading = true;
+          // this.$http.post('/api/locations/', location)
+          //     .then((response) => {
+          //       this.newLocation = {};
+          //       this.loading = true;
+          //       this.getLocations();
+          //       this.showAllLocations();
+          //     })
+          //     .catch((err) => {
+          //       this.loading = false;
+          //       console.log(err);
+          //     })
         },
         getLocations: function() {
           this.loading = true;

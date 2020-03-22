@@ -24,12 +24,12 @@ from django.conf.urls import url
 
 
 urlpatterns = [
+    path('api/', include('library.urls')),
     url(r'^auth-jwt/', obtain_jwt_token),
     url(r'^auth-jwt-refresh/', refresh_jwt_token),
     url(r'^auth-jwt-verify/', verify_jwt_token),
     path('admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('api/', include('library.urls')),
     path('accounts/profile/', RedirectView.as_view(url='/')),
     path('', TemplateView.as_view(template_name='library/index.html')),
 ]
