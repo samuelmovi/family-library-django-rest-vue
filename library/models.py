@@ -23,7 +23,7 @@ class Book(models.Model):
     isbn = models.CharField(max_length=100)
     publish_date = models.CharField(max_length=50)
     purchase_date = models.CharField(max_length=50)
-    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
+    location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, null=True)
     loaned = models.BooleanField(default=False)
     created = models.DateTimeField('date created', auto_now_add=True)
     modified = models.DateTimeField('date modified', null=True, auto_now=True)
