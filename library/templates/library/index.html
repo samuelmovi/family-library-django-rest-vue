@@ -14,14 +14,15 @@
 </head>
 
 <body>
-  <!-- VueJs stuff -->
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
 
 {% if user.is_authenticated is False %}
   <!-- LOGIN -->
   {% include 'library/login.html' %}
 {% else %}
+  <!-- VueJs stuff -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
+  
 <div id="app">
   <header>
     <div>{$ page_title $}</div>
@@ -324,12 +325,12 @@
       <a v-on:click="showReturnLoan" class="bottom_link w3-container w3-cell w3-btn w3-mobile w3-hover-green">Return</a>
     </div>
 
+  </div>
+  <script type="text/javascript" src = "{% static 'library/script.js' %}"></script>
+  <script type="text/javascript" src = "{% static 'library/myVue.js' %}"></script>
 {% endif %}
 
 
-</div>
-    <script type="text/javascript" src = "{% static 'library/script.js' %}"></script>
-    <script type="text/javascript" src = "{% static 'library/myVue.js' %}"></script>
 </body>
 
 </html>
