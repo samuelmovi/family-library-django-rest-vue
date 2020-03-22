@@ -3,6 +3,7 @@ new Vue({
     el: '#app',
     data: {
       username: 'user1',
+      jwt = '',
       page_title: 'My Library Manager',
       books: [],
       book: {},
@@ -38,6 +39,24 @@ new Vue({
         async fetchJWT() {
           const res = await fetch(`/api/token?username=${this.username}&password=${this.password}`);
           this.jwt = await res.text();
+        },
+        async postWithJWT(url, payload) {
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: new Headers({
+              Authorization: `JWT: ${this.jwt}`
+            }),
+            data: payload,
+          });
+        },
+        async getWithJWT(url, payload) {
+          const res = await fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+              Authorization: `JWT: ${this.jwt}`
+            }),
+            body: payload,
+          });
         },
         // UI Controllers
         // Books
