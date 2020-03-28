@@ -8,13 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - check book loaned status before loaning
 - make tests more thorough
 - when user authenticated, add token to template
-- add authentication to tests
 
 
 ## 2020-03-28
 ### Added
 - user name link to home view in the banner
 - new tests for JwtTestCase
+- authentication to unit tests
 
 ### Changed
 - structure of index template

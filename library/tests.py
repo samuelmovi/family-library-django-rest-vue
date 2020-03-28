@@ -18,6 +18,18 @@ from .models import Book, Location, Loan
 
 User = get_user_model()
 
+def get_auth_token():
+    auth_data = {
+        'username': 'test_user',
+        'password': 'qwerq32rqwer2q3',
+    }
+    # create user
+    User.objects.create_user(**auth_data)
+    # create client
+    client = APIClient(enforce_csrf_checks=True)
+    response = client.post('/auth-jwt/', auth_data, format='json')
+    return response.data['token']
+
 # MODELS
 
 
@@ -157,7 +169,7 @@ class JwtTestCase(TestCase):
         # assert response is not null
         self.assertIsNotNone(response)
         # assert response includes token
-        self.assertIsNotNone(response.data['token'])
+        self.assertTrue('token' in response.data)
         decoded_payload = utils.jwt_decode_handler(response.data['token'])
         self.assertEqual(decoded_payload['username'], self.auth_data['username'])
         # printouts
@@ -219,6 +231,9 @@ class LibraryTestCase(APITestCase):
 
     def setUp(self):
         self.client = APIClient()
+        
+        self.token = get_auth_token()
+
         self.location = Location.objects.create(
             address=self.string2,
             room=self.string2,
@@ -242,74 +257,133 @@ class LibraryTestCase(APITestCase):
             borrower=self.string1,
             lender=self.string2,
             book=self.book,
-        )
-
-    def tearDown(self):
-        print('[#] Tearing down...\n')
-        Loan.objects.all().delete()
-        Book.objects.all().delete()
-        Location.objects.all().delete()
-       
-    
+        )      
 
     # BOOK TESTS
-    def test_create_book(self):
+    def test_create_book_auth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
         res = self.client.post('/api/books/', data=self.book_fields)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         # TODO: assert book has been created
     
-    def test_get_all_books(self):
+    def test_create_book_noauth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='')
+        res = self.client.post('/api/books/', data=self.book_fields)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_all_books_auth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
         res = self.client.get('/api/books/{}/'.format(self.book.pk))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertTrue(len(res.data)>0)
     
-    def test_modify_book(self):
+    def test_get_all_books_noauth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='')
+        res = self.client.get('/api/books/{}/'.format(self.book.pk))
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_modify_book_auth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
         res = self.client.put('/api/books/{}/'.format(self.book.pk), data=self.book_fields_mod)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         # TODO: assert book fields have been modified
     
-    def test_delete_book(self):
+    def test_modify_book_noauth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='')
+        res = self.client.put('/api/books/{}/'.format(self.book.pk), data=self.book_fields_mod)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_delete_book_auth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
         res = self.client.delete('/api/books/{}/'.format(self.book.pk))
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         # TODO: assert book has been deleted
+    
+    def test_delete_book_noauth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='')
+        res = self.client.delete('/api/books/{}/'.format(self.book.pk))
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
     # LOCATION TESTS
-    def test_create_location(self):
+    def test_create_location_auth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
         res = self.client.post('/api/locations/', data=self.location_fields)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         # TODO: assert location has been created
     
-    def test_get_all_location(self):
+    def test_create_location_noauth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='')
+        res = self.client.post('/api/locations/', data=self.location_fields)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_all_location_auth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
         res = self.client.get('/api/locations/{}/'.format(self.location.pk))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertTrue(len(res.data)>0)
     
-    def test_modify_location(self):
+    def test_get_all_location_noauth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='')
+        res = self.client.get('/api/locations/{}/'.format(self.location.pk))
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_modify_location_auth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
         res = self.client.put('/api/locations/{}/'.format(self.location.pk), data=self.location_fields_mod)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         # TODO: assert location fields have been modified
     
-    def test_delete_location(self):
+    def test_modify_location_noauth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='')
+        res = self.client.put('/api/locations/{}/'.format(self.location.pk), data=self.location_fields_mod)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_delete_location_auth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
         res = self.client.delete('/api/locations/{}/'.format(self.location.pk))
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         # TODO: assert location has been deleted
 
+    def test_delete_location_noauth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='')
+        res = self.client.delete('/api/locations/{}/'.format(self.location.pk))
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        
     # LOAN TESTS
-    def test_create_loan(self):
-        recipient = 'borrower'
+    def test_create_loan_auth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
         res = self.client.post('/api/loans/', data={'borrower': 'BOOK_THIEF', 'lender': self.username1, 'book': self.book.pk})
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         # TODO: assert loan has been created
     
-    def test_get_all_loans(self):
+    def test_create_loan_noauth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='')
+        res = self.client.post('/api/loans/', data={'borrower': 'BOOK_THIEF', 'lender': self.username1, 'book': self.book.pk})
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_all_loans_auth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
         res = self.client.get('/api/loans/{}/'.format(self.location.pk))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertTrue(len(res.data)>0)
     
-    def test_return_loan(self):
+    def test_get_all_loans_noauth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='')
+        res = self.client.get('/api/loans/{}/'.format(self.location.pk))
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_return_loan_auth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
         self.loan_fields['returned'] = 'true'
         self.loan_fields['book'] = str(self.book.pk)
         res = self.client.put('/api/loans/{}/'.format(self.loan.pk), data=self.loan_fields)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         # TODO: assert loan fields have been modified
+    
+    def test_return_loan_noauth(self):
+        self.client.credentials(HTTP_AUTHORIZATION='')
+        self.loan_fields['returned'] = 'true'
+        self.loan_fields['book'] = str(self.book.pk)
+        res = self.client.put('/api/loans/{}/'.format(self.loan.pk), data=self.loan_fields)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
     
