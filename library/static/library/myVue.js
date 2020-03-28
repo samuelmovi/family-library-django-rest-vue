@@ -39,14 +39,6 @@ new Vue({
         // JWT Auth
         async fetchJWT() {
           if (localStorage.jwt == null){
-            // this.$http.post('/auth-jwt/',{username: this.username, password: this.password})
-            //   .then((response) => {
-            //     this.jwt = response.data['token'];
-            //     localStorage.jwt = this.jwt;
-            //   })
-            //   .catch((err) => {
-            //     console.log(err);
-            //   })
             this.jwt = document.getElementsByTagName('auth-token')
           }
           else{
@@ -67,14 +59,16 @@ new Vue({
                 console.log(err);
               })
         },
-        async getWithJWT(url, payload) {
-          const res = await fetch(url, {
-            method: 'GET',
-            headers: new Headers({
-              Authorization: `JWT: ${this.jwt}`
-            }),
-            body: payload,
-          });
+        async getWithJWT(url) {
+          this.$http.get(url, {headers: {Authorization: `JWT ${this.jwt}`}})
+              .then((response) => {
+                return response.data;
+              })
+              .catch((err) => {
+               this.loading = false;
+               console.log(err);
+               return null;
+              })
         },
         // UI Controllers
         // Home
@@ -307,16 +301,17 @@ new Vue({
               })
         },
         getBooks: function() {
-          this.loading = true;
-          this.$http.get('/api/books/')
-              .then((response) => {
-                this.books = response.data;
-                this.loading = false;
-              })
-              .catch((err) => {
-               this.loading = false;
-               console.log(err);
-              })
+          this.books = this.getWithJWT('/api/books/')
+          // this.loading = true;
+          // this.$http.get('/api/books/')
+          //     .then((response) => {
+          //       this.books = response.data;
+          //       this.loading = false;
+          //     })
+          //     .catch((err) => {
+          //      this.loading = false;
+          //      console.log(err);
+          //     })
          },
         bookDetails: function(book){
             this.book = book;
@@ -369,16 +364,17 @@ new Vue({
           //     })
         },
         getLocations: function() {
-          this.loading = true;
-          this.$http.get('/api/locations/')
-              .then((response) => {
-                this.locations = response.data;
-                this.loading = false;
-              })
-              .catch((err) => {
-               this.loading = false;
-               console.log('[!!!] ' + err);
-              })
+          this.locations = this.getWithJWT('/api/locations/')
+          // this.loading = true;
+          // this.$http.get('/api/locations/')
+          //     .then((response) => {
+          //       this.locations = response.data;
+          //       this.loading = false;
+          //     })
+          //     .catch((err) => {
+          //      this.loading = false;
+          //      console.log('[!!!] ' + err);
+          //     })
         },
         locationDetails: function(location){
           this.location = location;
@@ -450,16 +446,17 @@ new Vue({
               })
         },
         getLoans: function() {
-          this.loading = true;
-          this.$http.get('/api/loans/')
-              .then((response) => {
-                this.loans = response.data;
-                this.loading = false;
-              })
-              .catch((err) => {
-               this.loading = false;
-               console.log(err);
-              })
+          this.loans = this.getWithJWT('/api/loans/')
+          // this.loading = true;
+          // this.$http.get('/api/loans/')
+          //     .then((response) => {
+          //       this.loans = response.data;
+          //       this.loading = false;
+          //     })
+          //     .catch((err) => {
+          //      this.loading = false;
+          //      console.log(err);
+          //     })
          },
         loanDetails: function(loan){
           this.loan = loan;
