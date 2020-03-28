@@ -2,4 +2,4 @@ Django>=2.2.4
 djangorestframework>=3.10.2
 django-cors-headers>=3.2.1
 djangorestframework-jwt>=1.11.0
-djangorestframework-simplejwt>=4.4.0
+# djangorestframework-simplejwt>=4.4.0

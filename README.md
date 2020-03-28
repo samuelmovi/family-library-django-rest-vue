@@ -2,6 +2,27 @@
 
 This is the first trial for the reimplementation of my Django Family Library web app with a Django REST backend and an integrated Vue.JS template frontend.
 
+
+## Requirements
+
+- Python >= 3.6
+- Django >= 2.2.4
+- djangorestframework >= 3.10.2
+- django-cors-headers >= 3.2.1
+- djangorestframework-jwt >= 1.11.0
+
+
+## Initialization
+
+From inside the project's folder:
+
+```shell
+python manange.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
+
  ## REST Refactoring 
  
 1. Initialize:
