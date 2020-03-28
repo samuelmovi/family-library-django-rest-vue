@@ -39,14 +39,15 @@ new Vue({
         // JWT Auth
         async fetchJWT() {
           if (localStorage.jwt == null){
-            this.$http.post('/auth-jwt/',{username: this.username, password: this.password})
-              .then((response) => {
-                this.jwt = response.data['token'];
-                localStorage.jwt = this.jwt;
-              })
-              .catch((err) => {
-                console.log(err);
-              })
+            // this.$http.post('/auth-jwt/',{username: this.username, password: this.password})
+            //   .then((response) => {
+            //     this.jwt = response.data['token'];
+            //     localStorage.jwt = this.jwt;
+            //   })
+            //   .catch((err) => {
+            //     console.log(err);
+            //   })
+            this.jwt = document.getElementsByTagName('auth-token')
           }
           else{
             this.jwt = localStorage.jwt;
