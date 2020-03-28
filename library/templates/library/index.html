@@ -1,3 +1,5 @@
+
+{% if user.is_authenticated %}
 <!DOCTYPE html>
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
@@ -14,18 +16,14 @@
 </head>
 
 <body>
-
-{% if user.is_authenticated is False %}
-  <!-- LOGIN -->
-  {% include 'library/login.html' %}
-{% else %}
   <!-- VueJs stuff -->
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
 
 <div id="app">
   <header>
-    <a class="user-name w3-cell w3-btn" v-on:click="showHome" href="">{{user.username}}</a>
+    <a class="user-name w3-cell w3-btn" v-on:click="showHome" href="">{{ user.username }}</a>
+    <br>
     <h3>{$ jwt $}</h3>
     
     <!-- NAVBAR -->
@@ -329,9 +327,11 @@
   </div>
   <script type="text/javascript" src = "{% static 'library/script.js' %}"></script>
   <script type="text/javascript" src = "{% static 'library/myVue.js' %}"></script>
-{% endif %}
-
 
 </body>
 
 </html>
+{% else %}
+  <!-- LOGIN -->
+  {% include 'library/login.html' %}
+{% endif %}

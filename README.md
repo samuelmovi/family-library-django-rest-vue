@@ -14,10 +14,11 @@ This is the first trial for the reimplementation of my Django Family Library web
 
 ## Initialization
 
-From inside the project's folder:
+From inside the project's folder, and using your virtualenv of choice:
 
 ```shell
-python manange.py makemigrations
+pip install -r requirements.txt
+python manage.py makemigrations
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver

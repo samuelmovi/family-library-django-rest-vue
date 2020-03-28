@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - user name link to home view in the banner
 
+### Changed
+- structure of index template
+
 ## 2020-03-22
 ### Added
 - make template that checks for authentication, and redirects accordingly
