@@ -5,6 +5,7 @@ new Vue({
       username: 'sam',
       password: 'aifol',
       jwt: '',
+      csrf_token: '',
       page_title: 'My Library Manager',
       books: [],
       book: {},
@@ -47,6 +48,7 @@ new Vue({
         },
         async postWithJWT(url, payload) {
           this.loading = true;
+          payload['csrfmiddlewaretoken'] = this.csrf_token
           this.$http.post(url, payload, {headers: {Authorization: `JWT ${this.jwt}`}})
               .then((response) => {
                 this.newLocation = {};
@@ -501,6 +503,8 @@ new Vue({
         },
     },
     mounted: function(){
+      // this.csrf_token = document.getElementsByTagName('csrfmiddlewaretoken').value
+      this.csrf_token = document.cookie
       this.fetchJWT();
       this.getBooks();
       this.getLocations();

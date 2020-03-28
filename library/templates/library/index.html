@@ -79,7 +79,7 @@
           <h2 align="center" >{% trans 'Add Book to Database' %}</h2>
       </div>
       <div class="w3-container">
-        <fieldset class="w3-container vue-form" >
+        <fieldset id="addBookFieldset" class="w3-container vue-form" >
             {% csrf_token %}
           <label>Title</label>
           <input v-model="newBook.title" class="w3-input" type="text" name="title">
