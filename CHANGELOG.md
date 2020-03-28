@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - check book loaned status before loaning
 - make tests more thorough
-
+- when user authenticated, add token to template
+- add authentication to tests
 
 ## 2020-03-22
 ### Added
