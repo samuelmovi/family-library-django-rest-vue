@@ -76,6 +76,24 @@ new Vue({
           });
         },
         // UI Controllers
+        // Home
+        showHome: function(){
+          this.homeVisible = true;
+          this.booksVisible = false;
+          this.allBooksVisible = false;
+          this.newBookVisible = false;
+          this.updateBookVisible = false;
+          this.deleteBookVisible = false;
+          this.locationsVisible = false;
+          this.allLocationsVisible = false;
+          this.newLocationVisible = false;
+          this.updateLocationVisible = false;
+          this.deleteLocationVisible = false;
+          this.loansVisible = false;
+          this.allLoansVisible = false;
+          this.newLoanVisible = false;
+          this.returnLoanVisible = false;
+        },
         // Books
         showAllBooks: function(){
             this.homeVisible = false;
