@@ -21,6 +21,7 @@ from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_jwt.views import verify_jwt_token
 
+from library.viewsets import default
 
 urlpatterns = [
     path('api/', include('library.urls')),
@@ -30,5 +31,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),     # ???
     path('accounts/profile/', RedirectView.as_view(url='/')),
-    path('', TemplateView.as_view(template_name='library/index.html')),
+    path('login/', TemplateView.as_view(template_name='library/login.html')),
+    # path('', TemplateView.as_view(template_name='library/index.html')),
+    path('', default, name="default")
 ]

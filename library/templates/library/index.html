@@ -1,5 +1,4 @@
 
-{% if user.is_authenticated %}
 <!DOCTYPE html>
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
@@ -24,7 +23,7 @@
   <header>
     <a class="user-name w3-cell w3-btn" v-on:click="showHome" href="">{{ user.username }}</a>
     <br>
-    <h3>{$ jwt $}</h3>
+    <h3>{{ token }}</h3>
     
     <!-- NAVBAR -->
     <div class=" navbar w3-cell-row w3-black">
@@ -331,7 +330,3 @@
 </body>
 
 </html>
-{% else %}
-  <!-- LOGIN -->
-  {% include 'library/login.html' %}
-{% endif %}
