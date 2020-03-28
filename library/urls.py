@@ -1,5 +1,5 @@
 from django.urls import path
-from django.conf.urls import url, include
+from django.conf.urls import include
 from rest_framework import routers
 
 from .viewsets import LocationViewSet, BookViewSet, LoanViewSet
@@ -13,5 +13,5 @@ router.register(r'loans', LoanViewSet)
 app_name = 'library'
 
 urlpatterns = [
-    url(r'^', include(router.urls))
+    path('', include(router.urls))
 ]
