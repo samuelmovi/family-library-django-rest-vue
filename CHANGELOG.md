@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 2020-03-28
 ### Added
 - user name link to home view in the banner
+- new tests for JwtTestCase
 
 ### Changed
 - structure of index template

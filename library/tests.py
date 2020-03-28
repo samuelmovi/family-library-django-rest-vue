@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.test import Client
 from django.utils import timezone
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.template.response import TemplateResponse
@@ -9,8 +9,14 @@ from django.template.response import TemplateResponse
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 
+from rest_framework_jwt import utils, views
+from rest_framework_jwt.compat import get_user_model
+from rest_framework_jwt.settings import api_settings, DEFAULTS
+
 from .models import Book, Location, Loan
 # Create your tests here.
+
+User = get_user_model()
 
 # MODELS
 
@@ -128,7 +134,44 @@ class LoanTestCase(TestCase):
             self.assertEqual(loan.__dict__[field], self.test_fields[field])
 
 
-## ViewSets
+# JWT
+class JwtTestCase(TestCase):
+
+    auth_data = {
+        'username': 'test_user',
+        'password': 'qwerq32rqwer2q3',
+    }
+
+    def setUp(self):
+        # create user
+        User.objects.create_user(username=self.auth_data['username'], password=self.auth_data['password'])
+        # create client
+        self.client = APIClient(enforce_csrf_checks=True)
+
+    def test_jwt_get_token_good_creds(self):
+        # make request with good creds
+        response = self.client.post('/auth-jwt/', self.auth_data, format='json')
+
+        # assert 200
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # assert response is not null
+        self.assertIsNotNone(response)
+        # assert response includes token
+        self.assertIsNotNone(response.data['token'])
+        decoded_payload = utils.jwt_decode_handler(response.data['token'])
+        self.assertEqual(decoded_payload['username'], self.auth_data['username'])
+        # printouts
+        print('[#] Response data: {}\n'.format(response.data))
+        print('[#] Decoded payload: {}'.format(decoded_payload))
+
+    def test_jwt_get_token_bad_creds(self):
+        # try to get token with bad credentials
+        response = self.client.post('/auth-jwt/', {'username': '1242134', 'password': '123413241'}, format='json')
+        # assert 400
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+# ViewSets
 
 class LibraryTestCase(APITestCase):
     string1 = "ewr23rrewfwqe"
@@ -175,7 +218,6 @@ class LibraryTestCase(APITestCase):
     }
 
     def setUp(self):
-        print('[#] Setting up...\n')
         self.client = APIClient()
         self.location = Location.objects.create(
             address=self.string2,
