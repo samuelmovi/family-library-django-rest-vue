@@ -32,6 +32,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),     # ???
     path('accounts/profile/', RedirectView.as_view(url='/')),
     path('login/', TemplateView.as_view(template_name='library/login.html')),
-    # path('', TemplateView.as_view(template_name='library/index.html')),
     path('', default, name="default")
 ]
