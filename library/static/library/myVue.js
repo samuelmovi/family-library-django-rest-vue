@@ -39,8 +39,9 @@ new Vue({
     methods: {
         // JWT Auth
         async fetchJWT() {
-          if (localStorage.jwt == null){
-            this.jwt = document.getElementsByTagName('auth-token')
+          if (localStorage.getItem("jwt") === null){
+            localStorage.jwt = document.getElementsByTagName('meta')[0].content
+            this.jwt = localStorage.jwt;
           }
           else{
             this.jwt = localStorage.jwt;
@@ -503,8 +504,7 @@ new Vue({
         },
     },
     mounted: function(){
-      // this.csrf_token = document.getElementsByTagName('csrfmiddlewaretoken').value
-      this.csrf_token = document.cookie
+      this.csrf_token = document.getElementById('addBookFieldset').elements[0].value
       this.fetchJWT();
       this.getBooks();
       this.getLocations();
