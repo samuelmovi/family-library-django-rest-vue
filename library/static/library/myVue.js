@@ -345,7 +345,9 @@ new Vue({
           this.postWithJWT('/api/locations/', location);
         },
         getLocations: function() {
+          this.loading = true;
           this.locations = this.getWithJWT('/api/locations/');
+          this.loading = false;
         },
         locationDetails: function(location){
           this.location = location;
@@ -467,5 +469,7 @@ new Vue({
       this.getBooks();
       this.getLocations();
       this.getLoans();
+      // document.cookie = "csrftoken= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
+      document.cookie = "sessionid= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
     }
 })
