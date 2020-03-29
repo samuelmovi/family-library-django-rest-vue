@@ -304,17 +304,7 @@ new Vue({
               })
         },
         getBooks: function() {
-          this.books = this.getWithJWT('/api/books/')
-          // this.loading = true;
-          // this.$http.get('/api/books/')
-          //     .then((response) => {
-          //       this.books = response.data;
-          //       this.loading = false;
-          //     })
-          //     .catch((err) => {
-          //      this.loading = false;
-          //      console.log(err);
-          //     })
+          this.books = this.getWithJWT('/api/books/');
          },
         bookDetails: function(book){
             this.book = book;
@@ -352,32 +342,10 @@ new Vue({
         },
         // Locations
         addLocation: function(location) {
-          this.postWithJWT('/api/locations/', location)
-          // this.loading = true;
-          // this.$http.post('/api/locations/', location)
-          //     .then((response) => {
-          //       this.newLocation = {};
-          //       this.loading = true;
-          //       this.getLocations();
-          //       this.showAllLocations();
-          //     })
-          //     .catch((err) => {
-          //       this.loading = false;
-          //       console.log(err);
-          //     })
+          this.postWithJWT('/api/locations/', location);
         },
         getLocations: function() {
-          this.locations = this.getWithJWT('/api/locations/')
-          // this.loading = true;
-          // this.$http.get('/api/locations/')
-          //     .then((response) => {
-          //       this.locations = response.data;
-          //       this.loading = false;
-          //     })
-          //     .catch((err) => {
-          //      this.loading = false;
-          //      console.log('[!!!] ' + err);
-          //     })
+          this.locations = this.getWithJWT('/api/locations/');
         },
         locationDetails: function(location){
           this.location = location;
@@ -449,17 +417,7 @@ new Vue({
               })
         },
         getLoans: function() {
-          this.loans = this.getWithJWT('/api/loans/')
-          // this.loading = true;
-          // this.$http.get('/api/loans/')
-          //     .then((response) => {
-          //       this.loans = response.data;
-          //       this.loading = false;
-          //     })
-          //     .catch((err) => {
-          //      this.loading = false;
-          //      console.log(err);
-          //     })
+          this.loans = this.getWithJWT('/api/loans/');
          },
         loanDetails: function(loan){
           this.loan = loan;
