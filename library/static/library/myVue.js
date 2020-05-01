@@ -36,13 +36,7 @@ new Vue({
     methods: {
         // JWT Auth
         async fetchJWT() {
-          if (localStorage.getItem("jwt") === null){
-            localStorage.jwt = document.getElementsByTagName('meta')[0].content
-            this.jwt = localStorage.jwt;
-          }
-          else{
-            this.jwt = localStorage.jwt;
-          }
+          this.jwt = document.getElementsByTagName('meta')[0].content
         },
         async postWithJWT(url, payload) {
           this.loading = true;
