@@ -5,7 +5,6 @@ new Vue({
       username: 'sam',
       password: 'aifol',
       jwt: '',
-      csrf_token: '',
       page_title: 'My Library Manager',
       books: [],
       book: {},
@@ -455,12 +454,9 @@ new Vue({
         },
     },
     mounted: function(){
-      // this.csrf_token = document.getElementById('addBookFieldset').elements[0].value
       this.fetchJWT();
       this.getBooks();
       this.getLocations();
       this.getLoans();
-      // document.cookie = "csrftoken= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
-      // document.cookie = "sessionid= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
     }
 })
