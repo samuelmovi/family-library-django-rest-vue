@@ -80,7 +80,7 @@
       </div>
       <div class="w3-container">
         <fieldset id="addBookFieldset" class="w3-container vue-form" >
-            {% csrf_token %}
+            <!-- {% csrf_token %} -->
           <label>Title</label>
           <input v-model="newBook.title" class="w3-input" type="text" name="title">
           <label >Author</label>
@@ -113,7 +113,7 @@
       </div>
       <div class="w3-container">
         <fieldset class="w3-container vue-form">
-            {% csrf_token %}
+            <!-- {% csrf_token %} -->
           <label>Title</label>
           <input v-model="book.title" class="w3-input" type="text" name="title">
           <label >Author</label>
@@ -190,7 +190,7 @@
       </div>
       <div class="w3-container">
         <fieldset class="w3-container vue-form">
-            {% csrf_token %}
+            <!-- {% csrf_token %} -->
           <label>Address</label>
           <input v-model="newLocation.address" class="w3-input" type="text" name="title">
           <label >Room</label>
@@ -213,7 +213,7 @@
       </div>
       <div class="w3-container">
         <fieldset class="w3-container vue-form">
-            {% csrf_token %}
+            <!-- {% csrf_token %} -->
           <label>Address</label>
           <input v-model="location.address" class="w3-input" type="text" name="address">
           <label >Room</label>
@@ -272,7 +272,7 @@
       </div>
       <div class="w3-container">
         <fieldset class="w3-container vue-form">
-            {% csrf_token %}
+            <!-- {% csrf_token %} -->
           <label>Recipient</label>
           <input v-model="newLoan.borrower" class="w3-input" type="text" name="borrower">
           <label >Book</label>

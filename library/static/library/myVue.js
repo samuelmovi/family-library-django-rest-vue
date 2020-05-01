@@ -49,7 +49,7 @@ new Vue({
         },
         async postWithJWT(url, payload) {
           this.loading = true;
-          payload['csrfmiddlewaretoken'] = this.csrf_token
+          // payload['csrfmiddlewaretoken'] = this.csrf_token
           this.$http.post(url, payload, {headers: {Authorization: `JWT ${this.jwt}`}})
               .then((response) => {
                 this.newLocation = {};
@@ -455,7 +455,7 @@ new Vue({
         },
     },
     mounted: function(){
-      this.csrf_token = document.getElementById('addBookFieldset').elements[0].value
+      // this.csrf_token = document.getElementById('addBookFieldset').elements[0].value
       this.fetchJWT();
       this.getBooks();
       this.getLocations();

@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - check book loaned status before loaning
 - make tests more thorough
-- create view to handle user authentication and to include token to template
 - fix apparent csrf error when posting through front-end
 
 ## 2020-03-28
