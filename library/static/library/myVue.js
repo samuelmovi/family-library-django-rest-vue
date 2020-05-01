@@ -292,16 +292,7 @@ new Vue({
         // Books
         addBook: function() {
           this.loading = true;
-          this.$http.post('/api/books/',this.newBook)
-              .then((response) => {
-                this.loading = false;
-                this.getBooks();
-                this.showAllBooks();
-              })
-              .catch((err) => {
-                this.loading = false;
-                console.log(err);
-              })
+          this.postWithJWT('/api/books/', this.newBook)
         },
         getBooks: function() {
           this.books = this.getWithJWT('/api/books/');
@@ -470,6 +461,6 @@ new Vue({
       this.getLocations();
       this.getLoans();
       // document.cookie = "csrftoken= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
-      document.cookie = "sessionid= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
+      // document.cookie = "sessionid= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
     }
 })
