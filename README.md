@@ -58,6 +58,8 @@ python manage.py runserver
 
 
 
+## JWT Authentication
 
+After a valid login, backend includes a HTML header called `auth-token` with valid JWT value.
 
-
+Vue grabs that value, and adds it as a header to every query
