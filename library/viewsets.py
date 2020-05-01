@@ -28,6 +28,9 @@ class LoanViewSet(viewsets.ModelViewSet):
 
 @login_required(login_url='/login/')
 def default(request):
+    '''
+    This view return the main vuejs-enabled template
+    '''
     jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
     jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 

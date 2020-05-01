@@ -5,11 +5,11 @@ This is the first trial for the reimplementation of my Django Family Library web
 
 ## Requirements
 
-- Python >= 3.6
-- Django >= 2.2.4
-- djangorestframework >= 3.10.2
-- django-cors-headers >= 3.2.1
-- djangorestframework-jwt >= 1.11.0
+- Python 3.7.3
+- Django 2.2.10
+- djangorestframework 3.10.2
+- django-cors-headers 3.2.1
+- djangorestframework-jwt .11.0
 
 
 ## Initialization
