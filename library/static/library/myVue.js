@@ -2,8 +2,6 @@ new Vue({
     delimiters: ['{$', '$}'],
     el: '#app',
     data: {
-      username: 'sam',
-      password: 'aifol',
       jwt: '',
       page_title: 'My Library Manager',
       books: [],
@@ -38,19 +36,7 @@ new Vue({
     methods: {
         // JWT Auth
         async fetchJWT() {
-          if (localStorage.jwt == null){
-            this.$http.post('/auth-jwt/',{username: this.username, password: this.password})
-              .then((response) => {
-                this.jwt = response.data['token'];
-                localStorage.jwt = this.jwt;
-              })
-              .catch((err) => {
-                console.log(err);
-              })
-          }
-          else{
-            this.jwt = localStorage.jwt;
-          }
+          this.jwt = document.getElementsByTagName('meta')[0].content
         },
         async postWithJWT(url, payload) {
           const res = await fetch(url, {
@@ -271,16 +257,17 @@ new Vue({
         // Books
         addBook: function() {
           this.loading = true;
-          this.$http.post('/api/books/',this.newBook)
-              .then((response) => {
-                this.loading = false;
-                this.getBooks();
-                this.showAllBooks();
-              })
-              .catch((err) => {
-                this.loading = false;
-                console.log(err);
-              })
+          this.postWithJWT('/api/books/', this.newBook);
+          // this.$http.post('/api/books/',this.newBook)
+          //     .then((response) => {
+          //       this.loading = false;
+          //       this.getBooks();
+          //       this.showAllBooks();
+          //     })
+          //     .catch((err) => {
+          //       this.loading = false;
+          //       console.log(err);
+          //     })
         },
         getBooks: function() {
           this.loading = true;
@@ -331,17 +318,18 @@ new Vue({
         // Locations
         addLocation: function(location) {
           this.loading = true;
-          this.$http.post('/api/locations/', location)
-              .then((response) => {
-                this.newLocation = {};
-                this.loading = true;
-                this.getLocations();
-                this.showAllLocations();
-              })
-              .catch((err) => {
-                this.loading = false;
-                console.log(err);
-              })
+          this.postWithJWT('/api/locations/', location);
+          // this.$http.post('/api/locations/', location)
+          //     .then((response) => {
+          //       this.newLocation = {};
+          //       this.loading = true;
+          //       this.getLocations();
+          //       this.showAllLocations();
+          //     })
+          //     .catch((err) => {
+          //       this.loading = false;
+          //       console.log(err);
+          //     })
         },
         getLocations: function() {
           this.loading = true;
