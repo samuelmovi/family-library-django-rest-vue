@@ -2,8 +2,6 @@ new Vue({
     delimiters: ['{$', '$}'],
     el: '#app',
     data: {
-      username: 'sam',
-      password: 'aifol',
       jwt: '',
       page_title: 'My Library Manager',
       books: [],
@@ -395,7 +393,7 @@ new Vue({
             console.log(err);
           });          
           // register loan
-          loan.lender = this.username;
+          // loan.lender = this.username;
           this.$http.post('/api/loans/', loan)
               .then((response) => {
                 this.newLoan = {};
