@@ -40,9 +40,10 @@
       <input v-model="credentials.username" class="w3-input" type="text" name="username">
       <label >Password</label>
       <input v-model="credentials.password" class="w3-input" type="password" name="password">
-      <button v-on:click="fetchJWT" class="medium-font w3-button w3-green w3-block w3-hover-black">LOGIN</button>
       <br>
+      <button v-on:click="fetchJWT" class="medium-font w3-button w3-green w3-block w3-hover-black">LOGIN</button>
     </fieldset>
+    <br>
   </div>
     
     <div id="home" v-show="homeVisible" class=" home w3-container w3-card-4 w3-margin-top">
