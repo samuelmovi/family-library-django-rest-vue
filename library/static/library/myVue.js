@@ -58,24 +58,6 @@ new Vue({
               console.log(err);
             })
         },
-        async postWithJWT(url, payload) {
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: new Headers({
-              Authorization: `JWT: ${this.jwt}`
-            }),
-            data: payload,
-          });
-        },
-        async getWithJWT(url, payload) {
-          const res = await fetch(url, {
-            method: 'GET',
-            headers: new Headers({
-              Authorization: `JWT: ${this.jwt}`
-            }),
-            body: payload,
-          });
-        },
         // UI Controllers
         showLogin: function(){
           this.loginVisible = true;
