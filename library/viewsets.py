@@ -12,35 +12,32 @@ from .serializers import LocationSerializer, BookSerializer, LoanSerializer
 class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
-    # permission_classes = [permissions.AllowAny]
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
 
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    # permission_classes = [permissions.AllowAny]
-    permission_classes = [permissions.IsAuthenticated]
+    # serializer_class = BookSerializer
+    # permission_classes = [permissions.IsAuthenticated]
 
 
 class LoanViewSet(viewsets.ModelViewSet):
     queryset = Loan.objects.all()
     serializer_class = LoanSerializer
-    # permission_classes = [permissions.AllowAny]
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
 
-@login_required(login_url='/login/')
+# @login_required(login_url='/login/')
 def default(request):
     '''
-    This view return the main vuejs-enabled template
+    This view returns the main vuejs-enabled template
     '''
-    jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-    jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+    # jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+    # jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
-    payload = jwt_payload_handler(request.user)
-    token = jwt_encode_handler(payload)
-    context = {
-    'token': token,
-    }
-    return render(request, 'library/index.html', context)
+    # payload = jwt_payload_handler(request.user)
+    # token = jwt_encode_handler(payload)
+    # context = {
+    # 'token': token,
+    # }
+    return render(request, 'library/index.html')
