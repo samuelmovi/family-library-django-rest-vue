@@ -2,11 +2,8 @@ new Vue({
     delimiters: ['{$', '$}'],
     el: '#app',
     data: {
-<<<<<<< HEAD
-=======
       credentials: {},
       username: '',
->>>>>>> weird
       jwt: '',
       page_title: 'My Library Manager',
       books: [],
@@ -42,55 +39,6 @@ new Vue({
     methods: {
         // JWT Auth
         async fetchJWT() {
-<<<<<<< HEAD
-          this.jwt = document.getElementsByTagName('meta')[0].content
-        },
-        async postWithJWT(url, payload) {
-          this.loading = true;
-          // payload['csrfmiddlewaretoken'] = this.csrf_token
-          this.$http.post(url, payload, {headers: {Authorization: `JWT ${this.jwt}`}})
-              .then((response) => {
-                this.newLocation = {};
-                this.loading = true;
-                this.getLocations();
-                this.showAllLocations();
-              })
-              .catch((err) => {
-                this.loading = false;
-                console.log(err);
-              })
-        },
-        async getWithJWT(url) {
-          this.$http.get(url, {headers: {Authorization: `JWT ${this.jwt}`}})
-              .then((response) => {
-                return response.data;
-              })
-              .catch((err) => {
-               this.loading = false;
-               console.log(err);
-               return null;
-              })
-        },
-        // UI Controllers
-        // Home
-        showHome: function(){
-          this.homeVisible = true;
-          this.booksVisible = false;
-          this.allBooksVisible = false;
-          this.newBookVisible = false;
-          this.updateBookVisible = false;
-          this.deleteBookVisible = false;
-          this.locationsVisible = false;
-          this.allLocationsVisible = false;
-          this.newLocationVisible = false;
-          this.updateLocationVisible = false;
-          this.deleteLocationVisible = false;
-          this.loansVisible = false;
-          this.allLoansVisible = false;
-          this.newLoanVisible = false;
-          this.returnLoanVisible = false;
-        },
-=======
           this.loading = true;
           this.$http.post('/auth-jwt/', this.credentials)
             .then((response) => {
@@ -148,7 +96,6 @@ new Vue({
           this.newLoanVisible = false;
           this.returnLoanVisible = false;
         },
->>>>>>> weird
         // Books
         showAllBooks: function(){
             this.loginVisible = false;
@@ -358,12 +305,6 @@ new Vue({
         // Books
         addBook: function() {
           this.loading = true;
-<<<<<<< HEAD
-          this.postWithJWT('/api/books/', this.newBook)
-        },
-        getBooks: function() {
-          this.books = this.getWithJWT('/api/books/');
-=======
           this.$http.post('/api/books/',this.newBook, {headers: {Authorization: `JWT ${this.jwt}`}})
               .then((response) => {
                 this.loading = false;
@@ -386,7 +327,6 @@ new Vue({
                this.loading = false;
                console.log(err);
               })
->>>>>>> weird
          },
         bookDetails: function(book){
             this.book = book;
@@ -424,14 +364,6 @@ new Vue({
         },
         // Locations
         addLocation: function(location) {
-<<<<<<< HEAD
-          this.postWithJWT('/api/locations/', location);
-        },
-        getLocations: function() {
-          this.loading = true;
-          this.locations = this.getWithJWT('/api/locations/');
-          this.loading = false;
-=======
           this.loading = true;
           this.$http.post('/api/locations/', location, {headers: {Authorization: `JWT ${this.jwt}`}})
               .then((response) => {
@@ -456,7 +388,6 @@ new Vue({
                this.loading = false;
                console.log('[!!!] ' + err);
               })
->>>>>>> weird
         },
         locationDetails: function(location){
           this.location = location;
@@ -528,9 +459,6 @@ new Vue({
               })
         },
         getLoans: function() {
-<<<<<<< HEAD
-          this.loans = this.getWithJWT('/api/loans/');
-=======
           this.loading = true;
           this.$http.get('/api/loans/', {headers: {Authorization: `JWT ${this.jwt}`}})
               .then((response) => {
@@ -541,7 +469,6 @@ new Vue({
                this.loading = false;
                console.log(err);
               })
->>>>>>> weird
          },
         loanDetails: function(loan){
           this.loan = loan;
