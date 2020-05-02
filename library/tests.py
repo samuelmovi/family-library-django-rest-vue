@@ -26,7 +26,7 @@ def get_auth_token():
     # create user
     User.objects.create_user(**auth_data)
     # create client
-    client = APIClient(enforce_csrf_checks=True)
+    client = APIClient()
     response = client.post('/auth-jwt/', auth_data, format='json')
     return response.data['token']
 
@@ -54,9 +54,6 @@ class LocationTestCase (TestCase):
     def test_content(self):
         location = Location.objects.get(address="test address")
         for field in self.test_fields:
-            # print("[#] Field: {}".format(field))
-            # print("\t> Instance: {}".format(location.__dict__[field]))
-            # print("\t> Test value: {}".format(self.test_fields[field]))
             self.assertEqual(location.__dict__[field], self.test_fields[field])
 
 
@@ -101,9 +98,6 @@ class BookTestCase(TestCase):
         book = Book.objects.get(title="test title")
         self.test_fields['location_id'] = Location.objects.get(address='address').id
         for field in self.test_fields:
-            # print("[#] Field: {}".format(field))
-            # print("\t> Instance: {}".format(book.__dict__[field]))
-            # print("\t> Test value: {}".format(self.test_fields[field]))
             self.assertEqual(book.__dict__[field], self.test_fields[field])
 
 
@@ -140,9 +134,6 @@ class LoanTestCase(TestCase):
         loan = Loan.objects.get(lender="test lender")
         self.test_fields['book_id'] = Book.objects.get(title='title').id
         for field in self.test_fields.keys():
-            # print("[#] Field: {}".format(field))
-            # print("\t> Instance: {}".format(loan.__dict__[field]))
-            # print("\t> Test value: {}".format(self.test_fields[field]))
             self.assertEqual(loan.__dict__[field], self.test_fields[field])
 
 
@@ -158,7 +149,7 @@ class JwtTestCase(TestCase):
         # create user
         User.objects.create_user(username=self.auth_data['username'], password=self.auth_data['password'])
         # create client
-        self.client = APIClient(enforce_csrf_checks=True)
+        self.client = APIClient()
 
     def test_jwt_get_token_good_creds(self):
         # make request with good creds
@@ -172,9 +163,6 @@ class JwtTestCase(TestCase):
         self.assertTrue('token' in response.data)
         decoded_payload = utils.jwt_decode_handler(response.data['token'])
         self.assertEqual(decoded_payload['username'], self.auth_data['username'])
-        # printouts
-        print('[#] Response data: {}\n'.format(response.data))
-        print('[#] Decoded payload: {}'.format(decoded_payload))
 
     def test_jwt_get_token_bad_creds(self):
         # try to get token with bad credentials
