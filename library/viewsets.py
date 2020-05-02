@@ -35,6 +35,9 @@ class LoanViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get', 'post', 'put', 'head']
 
+    def get_queryset(self):
+        return models.Loan.objects.filter(lender=self.request.user.username).all()
+
 
 # @login_required(login_url='/login/')
 def default(request):
