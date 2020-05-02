@@ -6,14 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 - check book loaned status before loaning
-- make tests more thorough
-- fix apparent csrf error when posting through front-end
 
 ## 2020-05-02
 ### Changed
 - login made thorugh template instead of backend to avoid CSRF issues
 - improvements to tests
 - disable DEL method for LoansViewSet
+- reloading the page no longer breaks authentication
 
 ### Added
 - Login panel

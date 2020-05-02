@@ -47,7 +47,9 @@ new Vue({
               // save token data from response
               localStorage.jwt = response.data['token']
               this.jwt = localStorage.jwt;
-              this.username = this.credentials['username'];
+              // save user name
+              localStorage.username = this.credentials['username'];
+              this.username = localStorage.username;
               // load the rest
               this.getBooks();
               this.getLocations();
@@ -530,6 +532,8 @@ new Vue({
         this.showLogin();
       }
       else{
+        this.jwt = localStorage.jwt;
+        this.username = localStorage.username;
         this.getBooks();
         this.getLocations();
         this.getLoans();
