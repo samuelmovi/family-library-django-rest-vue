@@ -15,7 +15,7 @@ new Vue({
       loans: [],
       loan: {},
       newLoan: {},
-      loginVisible: true,
+      loginVisible: false,
       homeVisible: false,
       booksVisible: false,
       allBooksVisible: false,
@@ -529,11 +529,11 @@ new Vue({
         },
     },
     mounted: function(){
-      if (localStorage.getItem("jwt") === null | this.jwt == ''){
-        this.loginVisible = true;
+      if (localStorage.getItem("jwt") === null & this.jwt == ''){
+        this.showLogin();
       }
       else{
-        this.homeVisible = true;
+        this.showHome();
         this.getBooks();
         this.getLocations();
         this.getLoans();
