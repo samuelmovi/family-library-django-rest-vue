@@ -61,6 +61,21 @@ new Vue({
               console.log(err);
             })
         },
+        // Logout
+        logout: function(){
+          // delete username, credentials, token
+          this.username = null;
+          this.credentials = {};
+          this.jwt = '';
+
+          // delete books, locations, loans
+          this.books = [];
+          this.locations = [];
+          this.loans = [];
+
+          // showLogin
+          this.showLogin();
+        },
         // UI Controllers
         showLogin: function(){
           this.loginVisible = true;

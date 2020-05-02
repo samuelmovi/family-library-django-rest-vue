@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - check book loaned status before loaning
 - make sure tabled don't leave page when shrinking width
 
+
 ## 2020-05-02
 ### Changed
 - login made thorugh template instead of backend to avoid CSRF issues
@@ -17,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Login panel
+- implemented logout
+
 
 ## 2020-03-28
 ### Added
