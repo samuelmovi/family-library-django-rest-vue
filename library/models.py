@@ -16,7 +16,7 @@ class Location(models.Model):
     username = models.CharField(max_length=100, null=True)
     
     def __str__(self):
-        return self.address
+        return f'{self.address}'
 
 
 class Book(models.Model):
@@ -34,7 +34,7 @@ class Book(models.Model):
     username = models.CharField(max_length=100, null=True)
     
     def __str__(self):
-        return self.title
+        return f'{self.title}'
 
 
 class Loan(models.Model):
@@ -45,5 +45,5 @@ class Loan(models.Model):
     return_date = models.DateTimeField('date of return', null=True)
     
     def __str__(self):
-        return self.recipient
+        return f'{self.book} / {self.borrower} / {self.loan_date}'
 

@@ -1,6 +1,9 @@
+import random
+
 from django.test import TestCase
 from django.test import Client
 from django.utils import timezone
+from django.urls import reverse
 # from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
@@ -13,12 +16,14 @@ from rest_framework_jwt import utils, views
 from rest_framework_jwt.compat import get_user_model
 from rest_framework_jwt.settings import api_settings, DEFAULTS
 
-from .models import Book, Location, Loan
+from . import models
+from . import factories
+
 # Create your tests here.
 
 User = get_user_model()
 
-def get_auth_token():
+def get_auth_token(client):
     auth_data = {
         'username': 'test_user',
         'password': 'qwerq32rqwer2q3',
@@ -26,13 +31,10 @@ def get_auth_token():
     # create user
     User.objects.create_user(**auth_data)
     # create client
-    client = APIClient()
     response = client.post('/auth-jwt/', auth_data, format='json')
     return response.data['token']
 
 # MODELS
-
-
 class LocationTestCase (TestCase):
     test_fields = {
         'address': 'test address',
@@ -43,7 +45,7 @@ class LocationTestCase (TestCase):
     }
     
     def setUp(self):
-        Location.objects.create(
+        models.Location.objects.create(
             address=self.test_fields['address'],
             room=self.test_fields['room'],
             furniture=self.test_fields['furniture'],
@@ -52,7 +54,7 @@ class LocationTestCase (TestCase):
         )
     
     def test_content(self):
-        location = Location.objects.get(address="test address")
+        location = models.Location.objects.get(address="test address")
         for field in self.test_fields:
             self.assertEqual(location.__dict__[field], self.test_fields[field])
 
@@ -72,7 +74,7 @@ class BookTestCase(TestCase):
     }
     
     def setUp(self):
-        Location.objects.create(
+        models.Location.objects.create(
             address='address',
             room='room',
             furniture='furniture',
@@ -81,7 +83,7 @@ class BookTestCase(TestCase):
             username='username',
         )
         
-        Book.objects.create(
+        models.Book.objects.create(
             title=self.test_fields['title'],
             author=self.test_fields['author'],
             genre=self.test_fields['genre'],
@@ -89,14 +91,14 @@ class BookTestCase(TestCase):
             isbn=self.test_fields['isbn'],
             publish_date=self.test_fields['publish_date'],
             purchase_date=self.test_fields['purchase_date'],
-            location=Location.objects.get(address='address'),
+            location=models.Location.objects.get(address='address'),
             loaned=self.test_fields['loaned'],
             username=self.test_fields['username'],
         )
         
     def test_content(self):
-        book = Book.objects.get(title="test title")
-        self.test_fields['location_id'] = Location.objects.get(address='address').id
+        book = models.Book.objects.get(title="test title")
+        self.test_fields['location_id'] = models.Location.objects.get(address='address').id
         for field in self.test_fields:
             self.assertEqual(book.__dict__[field], self.test_fields[field])
 
@@ -109,7 +111,7 @@ class LoanTestCase(TestCase):
     }
     
     def setUp(self):
-        Book.objects.create(
+        models.Book.objects.create(
             title='title',
             author='author',
             genre='genre',
@@ -124,15 +126,15 @@ class LoanTestCase(TestCase):
             username='username',
         )
         
-        Loan.objects.create(
-            book=Book.objects.get(title='title'),
+        models.Loan.objects.create(
+            book=models.Book.objects.get(title='title'),
             lender=self.test_fields['lender'],
             borrower=self.test_fields['borrower'],
         )
     
     def test_content(self):
-        loan = Loan.objects.get(lender="test lender")
-        self.test_fields['book_id'] = Book.objects.get(title='title').id
+        loan = models.Loan.objects.get(lender="test lender")
+        self.test_fields['book_id'] = models.Book.objects.get(title='title').id
         for field in self.test_fields.keys():
             self.assertEqual(loan.__dict__[field], self.test_fields[field])
 
@@ -172,206 +174,452 @@ class JwtTestCase(TestCase):
 
 
 # ViewSets
+class LocationViewSetTest(APITestCase):
 
-class LibraryTestCase(APITestCase):
-    string1 = "ewr23rrewfwqe"
-    string2 = "pojopi87oijij"
-    username1 = 'sam'
-
-    book_fields = {
-        'title': string1,
-        'author': string1,
-        'genre': string1,
-        'publisher': string1,
-        'isbn': string1,
-        'publish_date': string1,
-        'purchase_date': string1,
-        'loaned': False,
-        'username': username1,
-    }
-    book_fields_mod = {
-        'title': string2,
-        'author': string2,
-        'genre': string2,
-        'publisher': string2,
-        'isbn': string2,
-        'publish_date': string2,
-        'purchase_date': string2,
-    }
-    location_fields = {
-        'address': string1,
-        'room': string1,
-        'furniture': string1,
-        'details': string1,
-        'username': username1,
-    }
-    location_fields_mod = {
-        'address': string2,
-        'room': string2,
-        'furniture': string2,
-        'details': string2,
-    }
-    loan_fields = {
-        'borrower': 'BOOK_THIEF',
-        'lender': username1,
-        'book': None,
-    }
+    fields = ('address', 'room', 'furniture', 'details')
 
     def setUp(self):
-        self.client = APIClient()
+        self.factory = factories.LocationFactory
+        self.model = models.Location
+        self.token = get_auth_token(self.client)
+    
+    def test_not_logged_user_cant_list_locations(self):
+        """Not logged-in user can't read notes
+        """
+        # Create instances
+        instances = [self.factory() for n in range(random.randint(1,5))]
+
+        # Request list
+        url = '/api/locations/'
+        response = self.client.get(url)
+
+        # Assert access is forbidden
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_not_logged_user_cannot_create_location(self):
+        """Not logged-in user cannot create new note
+        """
+        # Query endpoint
+        url = '/api/locations/'
+        response = self.client.post(url, data={})
+
+        # Assert access is forbidden
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_not_logged_user_cannot_modify_existing_location(self):
+        """Not logged-in user cannot modify existing note
+        """
+        # Create instances
+        instance = self.factory()
+
+        # Query endpoint
+        url = f'/api/locations/{instance.pk}/'
+        response = self.client.put(url, {}, format='json')
         
-        self.token = get_auth_token()
+        # Assert forbidden code
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        self.location = Location.objects.create(
-            address=self.string2,
-            room=self.string2,
-            furniture=self.string2,
-            details=self.string2,
-            username=self.username1,
-        )
-        self.book = Book.objects.create(
-            title=self.string2,
-            author=self.string2,
-            genre=self.string2,
-            publisher=self.string2,
-            isbn=self.string2,
-            publish_date=self.string2,
-            purchase_date=self.string2,
-            location=None,
-            loaned=False,
-            username=self.username1,
-        )
-        self.loan = Loan.objects.create(
-            borrower=self.string1,
-            lender=self.string2,
-            book=self.book,
-        )      
+    def test_not_logged_user_cannot_delete_existing_location(self):
+        """Not logged-in user cannot delete existing note
+        """
+        # Create instances
+        instance = self.factory()
 
-    # BOOK TESTS
-    def test_create_book_auth(self):
+        # Query endpoint
+        url = f'/api/locations/{instance.pk}/'
+        response = self.client.delete(url)
+ 
+        # Assert instance still exists on db
+        self.assertTrue(self.model.objects.get(id=instance.pk))
+
+    def test_logged_user_can_list_location(self):
+        """Regular logged-in user can list location
+        """
+        # Create instances
+        instances = [self.factory() for n in range(random.randint(1,5))]
+
+        # authorize client
         self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
-        res = self.client.post('/api/books/', data=self.book_fields)
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        # TODO: assert book has been created
-    
-    def test_create_book_noauth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='')
-        res = self.client.post('/api/books/', data=self.book_fields)
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_get_all_books_auth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
-        res = self.client.get('/api/books/{}/'.format(self.book.pk))
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertTrue(len(res.data)>0)
-    
-    def test_get_all_books_noauth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='')
-        res = self.client.get('/api/books/{}/'.format(self.book.pk))
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_modify_book_auth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
-        res = self.client.put('/api/books/{}/'.format(self.book.pk), data=self.book_fields_mod)
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        # TODO: assert book fields have been modified
-    
-    def test_modify_book_noauth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='')
-        res = self.client.put('/api/books/{}/'.format(self.book.pk), data=self.book_fields_mod)
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_delete_book_auth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
-        res = self.client.delete('/api/books/{}/'.format(self.book.pk))
-        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        # TODO: assert book has been deleted
-    
-    def test_delete_book_noauth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='')
-        res = self.client.delete('/api/books/{}/'.format(self.book.pk))
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    # LOCATION TESTS
-    def test_create_location_auth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
-        res = self.client.post('/api/locations/', data=self.location_fields)
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        # TODO: assert location has been created
-    
-    def test_create_location_noauth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='')
-        res = self.client.post('/api/locations/', data=self.location_fields)
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_get_all_location_auth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
-        res = self.client.get('/api/locations/{}/'.format(self.location.pk))
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertTrue(len(res.data)>0)
-    
-    def test_get_all_location_noauth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='')
-        res = self.client.get('/api/locations/{}/'.format(self.location.pk))
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_modify_location_auth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
-        res = self.client.put('/api/locations/{}/'.format(self.location.pk), data=self.location_fields_mod)
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        # TODO: assert location fields have been modified
-    
-    def test_modify_location_noauth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='')
-        res = self.client.put('/api/locations/{}/'.format(self.location.pk), data=self.location_fields_mod)
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_delete_location_auth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
-        res = self.client.delete('/api/locations/{}/'.format(self.location.pk))
-        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        # TODO: assert location has been deleted
-
-    def test_delete_location_noauth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='')
-        res = self.client.delete('/api/locations/{}/'.format(self.location.pk))
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
         
-    # LOAN TESTS
-    def test_create_loan_auth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
-        res = self.client.post('/api/loans/', data={'borrower': 'BOOK_THIEF', 'lender': self.username1, 'book': self.book.pk})
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        # TODO: assert loan has been created
-    
-    def test_create_loan_noauth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='')
-        res = self.client.post('/api/loans/', data={'borrower': 'BOOK_THIEF', 'lender': self.username1, 'book': self.book.pk})
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        # Request list
+        url = '/api/locations/'
+        response = self.client.get(url)
 
-    def test_get_all_loans_auth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
-        res = self.client.get('/api/loans/{}/'.format(self.location.pk))
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertTrue(len(res.data)>0)
-    
-    def test_get_all_loans_noauth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='')
-        res = self.client.get('/api/loans/{}/'.format(self.location.pk))
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        # Assert access is allowed
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Assert all instances are returned
+        self.assertEqual(len(instances), len(response.data))
 
-    def test_return_loan_auth(self):
+    def test_logged_user_can_create_location(self):
+        """Regular logged-in user can create location
+        """
+        # Define request data
+        data = {
+            'address': 'location address test data',
+            'room': 'location room test data',
+            'furniture': 'location furniture test data',
+            'details': 'location details test data',
+        }
+
+        # authorize client
         self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
-        self.loan_fields['returned'] = 'true'
-        self.loan_fields['book'] = str(self.book.pk)
-        res = self.client.put('/api/loans/{}/'.format(self.loan.pk), data=self.loan_fields)
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        # TODO: assert loan fields have been modified
+
+        # Query endpoint
+        url = '/api/locations/'
+        response = self.client.post(url, data=data)
+
+        # Assert endpoint returns created status
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Assert instance exists on db
+        self.assertTrue(self.model.objects.get(id=response.data['id']))
     
-    def test_return_loan_noauth(self):
-        self.client.credentials(HTTP_AUTHORIZATION='')
-        self.loan_fields['returned'] = 'true'
-        self.loan_fields['book'] = str(self.book.pk)
-        res = self.client.put('/api/loans/{}/'.format(self.loan.pk), data=self.loan_fields)
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+    def test_logged_user_can_modify_existing_location(self):
+        """Regular logged-in user can modify existing location
+        """
+        # Create instances
+        instance = self.factory()
+
+        # Define request data
+        data = {
+            'address': 'location address test data MOD',
+            'room': 'location room test data MOD',
+            'furniture': 'location furniture test data MOD',
+            'details': 'location details test data MOD',
+        }
+
+        # authorize client
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
+
+        # Query endpoint
+        url = f'/api/locations/{instance.pk}/'
+        response = self.client.put(url, data, format='json')
+
+        # Assert endpoint returns OK code
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Assert instance has been modified
+        for key in data:
+            self.assertEqual(data[key], response.data[key])
     
+    def test_logged_user_can_delete_existing_location(self):
+        """Regular logged-in user can delete existing location
+        """
+        # Create instances
+        instance = self.factory()
+
+        # authorize client
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
+
+        # Query endpoint
+        url = f'/api/locations/{instance.pk}/'
+        response = self.client.delete(url)
+
+        # Assert 204 no content
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # Assert instance not exists anymore on db
+        self.assertFalse(self.model.objects.filter(id=instance.pk).exists())
+
+
+class BookViewSetTest(APITestCase):
+    
+    def setUp(self):
+        self.factory = factories.BookFactory
+        self.model = models.Book
+        self.token = get_auth_token(self.client)
+    
+    def test_not_logged_user_cant_list_books(self):
+        """Not logged-in user can't read book
+        """
+        # Create instances
+        instances = [self.factory() for n in range(random.randint(1,5))]
+
+        # Request list
+        url = '/api/books/'
+        response = self.client.get(url)
+
+        # Assert access is forbidden
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_not_logged_user_cannot_create_book(self):
+        """Not logged-in user cannot create new book
+        """
+        # Query endpoint
+        url = '/api/books/'
+        response = self.client.post(url, data={})
+
+        # Assert access is forbidden
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_not_logged_user_cannot_modify_existing_book(self):
+        """Not logged-in user cannot modify existing book
+        """
+        # Create instances
+        instance = self.factory()
+
+        # Query endpoint
+        url = f'/api/books/{instance.pk}/'
+        response = self.client.put(url, {}, format='json')
+        
+        # Assert forbidden code
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_not_logged_user_cannot_delete_existing_book(self):
+        """Not logged-in user cannot delete existing book
+        """
+        # Create instances
+        instance = self.factory()
+
+        # Query endpoint
+        url = f'/api/books/{instance.pk}/'
+        response = self.client.delete(url)
+ 
+        # Assert instance still exists on db
+        self.assertTrue(self.model.objects.get(id=instance.pk))
+
+    def test_logged_user_can_list_book(self):
+        """Regular logged-in user can list book
+        """
+        # Create instances
+        instances = [self.factory() for n in range(random.randint(1,5))]
+
+        # authorize client
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
+        
+        # Request list
+        url = '/api/books/'
+        response = self.client.get(url)
+
+        # Assert access is allowed
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Assert all instances are returned
+        self.assertEqual(len(instances), len(response.data))
+
+    def test_logged_user_can_create_book(self):
+        """Regular logged-in user can create book
+        """
+        # Define request data
+        data = {
+            'title': 'book title test data',
+            'author': 'book author test data',
+            'genre': 'book genre test data',
+            'publisher': 'book publisher test data',
+            'isbn': 'book title test data',
+            'publish_date': 'book publish_date test data',
+            'purchase_date': 'book purchase_date test data',
+            'location': factories.LocationFactory().pk,
+        }
+
+        # authorize client
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
+
+        # Query endpoint
+        url = '/api/books/'
+        response = self.client.post(url, data=data)
+
+        # Assert endpoint returns created status
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Assert instance exists on db
+        self.assertTrue(self.model.objects.get(id=response.data['id']))
+    
+    def test_logged_user_can_modify_existing_book(self):
+        """Regular logged-in user can modify existing book
+        """
+        # Create instances
+        instance = self.factory()
+
+        # Define request data
+        data = {
+            'title': 'book title test data MOD',
+            'author': 'book author test data MOD',
+            'genre': 'book genre test data MOD',
+            'publisher': 'book publisher test data MOD',
+            'isbn': 'book title test data MOD',
+            'publish_date': 'book publish_date test data MOD',
+            'purchase_date': 'book purchase_date test data MOD',
+            'location': factories.LocationFactory().pk,
+        }
+
+        # authorize client
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
+
+        # Query endpoint
+        url = f'/api/books/{instance.pk}/'
+        response = self.client.put(url, data, format='json')
+
+        # Assert endpoint returns OK code
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Assert not loaned
+        self.assertFalse(response.data['loaned'])
+
+        # Assert instance has been modified
+        for key in data:
+            self.assertEqual(data[key], response.data[key])
+    
+    def test_logged_user_can_delete_existing_book(self):
+        """Regular logged-in user can delete existing book
+        """
+        # Create instances
+        instance = self.factory()
+
+        # authorize client
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
+
+        # Query endpoint
+        url = f'/api/books/{instance.pk}/'
+        response = self.client.delete(url)
+
+        # Assert 204 no content
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # Assert instance not exists anymore on db
+        self.assertFalse(self.model.objects.filter(id=instance.pk).exists())
+
+
+class LoanViewSetTest(APITestCase):
+    
+    def setUp(self):
+        self.factory = factories.LoanFactory
+        self.model = models.Loan
+        self.token = get_auth_token(self.client)
+    
+    def test_not_logged_user_cant_list_loans(self):
+        """Not logged-in user can't read loan
+        """
+        # Create instances
+        instances = [self.factory() for n in range(random.randint(1,5))]
+
+        # Request list
+        url = '/api/loans/'
+        response = self.client.get(url)
+
+        # Assert access is forbidden
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_not_logged_user_cannot_create_loan(self):
+        """Not logged-in user cannot create new loan
+        """
+        # Query endpoint
+        url = '/api/loans/'
+        response = self.client.post(url, data={})
+
+        # Assert access is forbidden
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_not_logged_user_cannot_modify_existing_loan(self):
+        """Not logged-in user cannot modify existing loan
+        """
+        # Create instances
+        instance = self.factory()
+
+        # Query endpoint
+        url = f'/api/loans/{instance.pk}/'
+        response = self.client.put(url, {}, format='json')
+        
+        # Assert forbidden code
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_not_logged_user_cannot_delete_existing_loan(self):
+        """Not logged-in user cannot delete existing loan
+        """
+        # Create instances
+        instance = self.factory()
+
+        # Query endpoint
+        url = f'/api/loans/{instance.pk}/'
+        response = self.client.delete(url)
+ 
+        # Assert instance still exists on db
+        self.assertTrue(self.model.objects.get(id=instance.pk))
+
+    def test_logged_user_can_list_loan(self):
+        """Regular logged-in user can list loan
+        """
+        # Create instances
+        instances = [self.factory() for n in range(random.randint(1,5))]
+
+        # authorize client
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
+        
+        # Request list
+        url = '/api/loans/'
+        response = self.client.get(url)
+
+        # Assert access is allowed
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Assert all instances are returned
+        self.assertEqual(len(instances), len(response.data))
+
+    def test_logged_user_can_create_loan(self):
+        """Regular logged-in user can create loan
+        """
+        # Define request data
+        data = {
+            'book': factories.BookFactory().pk,
+            'lender': 'test lender data',
+            'borrower': 'borrower test data',
+        }
+
+        # authorize client
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
+
+        # Query endpoint
+        url = '/api/loans/'
+        response = self.client.post(url, data=data)
+
+        # Assert endpoint returns created status
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Assert instance exists on db
+        self.assertTrue(self.model.objects.get(id=response.data['id']))
+    
+    def test_logged_user_can_modify_existing_loan(self):
+        """Regular logged-in user can modify existing loan
+        """
+        # Create instances
+        instance = self.factory()
+
+        # Define request data
+        data = {
+            'book': instance.book.pk,
+            'lender': instance.lender,
+            'borrower': instance.borrower,
+            # to return book set return_date
+            'return_date': timezone.now(),
+        }
+
+        # authorize client
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
+
+        # Query endpoint
+        url = f'/api/loans/{instance.pk}/'
+        response = self.client.put(url, data, format='json')
+
+        # Assert endpoint returns OK code
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Assert instance has been modified
+        mod = self.model.objects.get(id=instance.pk)
+        self.assertIsNotNone(mod.return_date)
+    
+    def test_logged_user_cannot_delete_existing_loan(self):
+        """Regular logged-in user can delete existing loan
+        """
+        # Create instances
+        instance = self.factory()
+
+        # authorize client
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
+
+        # Query endpoint
+        url = f'/api/loans/{instance.pk}/'
+        response = self.client.delete(url)
+
+        # Assert 204 no content
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        # Assert instance not exists anymore on db
+        self.assertTrue(self.model.objects.filter(id=instance.pk).exists())
