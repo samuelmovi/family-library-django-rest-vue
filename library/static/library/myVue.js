@@ -16,6 +16,7 @@ new Vue({
       loan: {},
       newLoan: {},
       loginVisible: false,
+      navbarVisible: false,
       homeVisible: false,
       booksVisible: false,
       allBooksVisible: false,
@@ -62,6 +63,7 @@ new Vue({
         showLogin: function(){
           this.loginVisible = true;
           this.homeVisible = false;
+          this.navbarVisible = false;
           this.booksVisible = false;
           this.locationsVisible = false;
           this.loansVisible = false;
@@ -79,6 +81,7 @@ new Vue({
         },
         // Home
         showHome: function(){
+          this.navbarVisible = true;
           this.loginVisible = false;
           this.homeVisible = true;
           this.booksVisible = false;
@@ -98,26 +101,27 @@ new Vue({
         },
         // Books
         showAllBooks: function(){
-            this.loginVisible = false;
-            this.homeVisible = false;
-            this.booksVisible = true;
-            this.locationsVisible = false;
-            this.loansVisible = false;
-            this.allBooksVisible = true;
-            this.newBookVisible = false;
-            this.updateBookVisible = false;
-            this.deleteBookVisible = false;
-            this.allLocationsVisible = false;
-            this.newLocationVisible = false;
-            this.updateLocationVisible = false;
-            this.deleteLocationVisible = false;
-            this.allLoansVisible = false;
-            this.newLoanVisible = false;
-            this.returnLoanVisible = false;
+          this.navbarVisible = true;
+          this.loginVisible = false;
+          this.homeVisible = false;
+          this.booksVisible = true;
+          this.locationsVisible = false;
+          this.loansVisible = false;
+          this.allBooksVisible = true;
+          this.newBookVisible = false;
+          this.updateBookVisible = false;
+          this.deleteBookVisible = false;
+          this.allLocationsVisible = false;
+          this.newLocationVisible = false;
+          this.updateLocationVisible = false;
+          this.deleteLocationVisible = false;
+          this.allLoansVisible = false;
+          this.newLoanVisible = false;
+          this.returnLoanVisible = false;
         },
         showNewBook: function(){
           this.newBook = {}
-
+          this.navbarVisible = true;
           this.loginVisible = false;
           this.homeVisible = false;
           this.booksVisible = true;
@@ -136,6 +140,7 @@ new Vue({
           this.returnLoanVisible = false;
         },
         showUpdateBook: function(){
+          this.navbarVisible = true;
           this.loginVisible = false;
           this.homeVisible = false;
           this.booksVisible = true;
@@ -154,6 +159,7 @@ new Vue({
           this.returnLoanVisible = false;
         },
         showDeleteBook: function(){
+          this.navbarVisible = true;
           this.loginVisible = false;
           this.homeVisible = false;
           this.booksVisible = true;
@@ -173,6 +179,7 @@ new Vue({
         },
         // Locations
         showAllLocations: function(){
+          this.navbarVisible = true;
           this.loginVisible = false;
           this.homeVisible = false;
           this.booksVisible = false;
@@ -192,6 +199,7 @@ new Vue({
         },
         showNewLocation: function(){
           this.newLocation = {}
+          this.navbarVisible = true;
           this.loginVisible = false;
           this.homeVisible = false;
           this.booksVisible = false;
@@ -210,6 +218,7 @@ new Vue({
           this.returnLoanVisible = false;
         },
         showUpdateLocation: function(){
+          this.navbarVisible = true;
           this.loginVisible = false;
           this.homeVisible = false;
           this.booksVisible = false;
@@ -228,6 +237,7 @@ new Vue({
           this.returnLoanVisible = false;
         },
         showDeleteLocation: function(){
+          this.navbarVisible = true;
           this.loginVisible = false;
           this.homeVisible = false;
           this.booksVisible = false;
@@ -247,6 +257,7 @@ new Vue({
       },
         // Loans
         showAllLoans: function(){
+          this.navbarVisible = true;
           this.loginVisible = false;
           this.homeVisible = false;
           this.booksVisible = false;
@@ -266,6 +277,7 @@ new Vue({
         },
         showNewLoan: function(){
           this.newLoan = {}
+          this.navbarVisible = true;
           this.loginVisible = false;
           this.homeVisible = false;
           this.booksVisible = false;
@@ -284,6 +296,7 @@ new Vue({
           this.returnLoanVisible = false;
         },
         showReturnLoan: function(){
+          this.navbarVisible = true;
           this.loginVisible = false;
           this.homeVisible = false;
           this.booksVisible = false;
