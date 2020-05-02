@@ -13,5 +13,5 @@ router.register(r'loans', LoanViewSet)
 app_name = 'library'
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
 ]

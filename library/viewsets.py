@@ -11,18 +11,27 @@ from .serializers import LocationSerializer, BookSerializer, LoanSerializer
 class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
+<<<<<<< HEAD
     permission_classes = [permissions.IsAuthenticated]
+=======
+    # permission_classes = [permissions.IsAuthenticated]
+>>>>>>> weird
 
 
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+<<<<<<< HEAD
     permission_classes = [permissions.IsAuthenticated]
+=======
+    # permission_classes = [permissions.IsAuthenticated]
+>>>>>>> weird
 
 
 class LoanViewSet(viewsets.ModelViewSet):
     queryset = Loan.objects.all()
     serializer_class = LoanSerializer
+<<<<<<< HEAD
     permission_classes = [permissions.IsAuthenticated]
 
 @login_required(login_url='/login/')
@@ -43,3 +52,22 @@ def default(request):
         return render(request, 'library/index.html', context)
 
 
+=======
+    # permission_classes = [permissions.IsAuthenticated]
+
+
+# @login_required(login_url='/login/')
+def default(request):
+    '''
+    This view returns the main vuejs-enabled template
+    '''
+    # jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+    # jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+    # payload = jwt_payload_handler(request.user)
+    # token = jwt_encode_handler(payload)
+    # context = {
+    # 'token': token,
+    # }
+    return render(request, 'library/index.html')
+>>>>>>> weird
