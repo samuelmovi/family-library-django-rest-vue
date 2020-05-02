@@ -335,6 +335,7 @@ new Vue({
         // Books
         addBook: function() {
           this.loading = true;
+          this.newBook.username = this.username;
           this.$http.post('/api/books/',this.newBook, {headers: {Authorization: `JWT ${this.jwt}`}})
               .then((response) => {
                 this.loading = false;
@@ -395,6 +396,7 @@ new Vue({
         // Locations
         addLocation: function(location) {
           this.loading = true;
+          location.username = this.username;
           this.$http.post('/api/locations/', location, {headers: {Authorization: `JWT ${this.jwt}`}})
               .then((response) => {
                 this.newLocation = {};
