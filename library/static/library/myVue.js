@@ -43,10 +43,14 @@ new Vue({
           this.$http.post('/auth-jwt/', this.credentials)
             .then((response) => {
               this.loading = true;
+              // save token data from response
               localStorage.jwt = response.data['token']
               this.jwt = localStorage.jwt;
-              console.log('[#] GOT token: '+this.jwt);
               this.username = this.credentials['username'];
+              // load the rest
+              this.getBooks();
+              this.getLocations();
+              this.getLoans();
               this.showHome();
             })
             .catch((err) => {
@@ -319,21 +323,20 @@ new Vue({
         // Books
         addBook: function() {
           this.loading = true;
-          this.postWithJWT('/api/books/', this.newBook);
-          // this.$http.post('/api/books/',this.newBook)
-          //     .then((response) => {
-          //       this.loading = false;
-          //       this.getBooks();
-          //       this.showAllBooks();
-          //     })
-          //     .catch((err) => {
-          //       this.loading = false;
-          //       console.log(err);
-          //     })
+          this.$http.post('/api/books/',this.newBook, {headers: {Authorization: `JWT ${this.jwt}`}})
+              .then((response) => {
+                this.loading = false;
+                this.getBooks();
+                this.showAllBooks();
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
         },
         getBooks: function() {
           this.loading = true;
-          this.$http.get('/api/books/')
+          this.$http.get('/api/books/', {headers: {Authorization: `JWT ${this.jwt}`}})
               .then((response) => {
                 this.books = response.data;
                 this.loading = false;
@@ -380,22 +383,21 @@ new Vue({
         // Locations
         addLocation: function(location) {
           this.loading = true;
-          this.postWithJWT('/api/locations/', location);
-          // this.$http.post('/api/locations/', location)
-          //     .then((response) => {
-          //       this.newLocation = {};
-          //       this.loading = true;
-          //       this.getLocations();
-          //       this.showAllLocations();
-          //     })
-          //     .catch((err) => {
-          //       this.loading = false;
-          //       console.log(err);
-          //     })
+          this.$http.post('/api/locations/', location, {headers: {Authorization: `JWT ${this.jwt}`}})
+              .then((response) => {
+                this.newLocation = {};
+                this.loading = true;
+                this.getLocations();
+                this.showAllLocations();
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
         },
         getLocations: function() {
           this.loading = true;
-          this.$http.get('/api/locations/')
+          this.$http.get('/api/locations/', {headers: {Authorization: `JWT ${this.jwt}`}})
               .then((response) => {
                 this.locations = response.data;
                 this.loading = false;
@@ -443,7 +445,7 @@ new Vue({
         addLoan: function(loan) {
           this.loading = true;
           // set the book as loaned
-          this.$http.get(`/api/books/${loan.book}/`)
+          this.$http.get(`/api/books/${loan.book}/`, {headers: {Authorization: `JWT ${this.jwt}`}})
             .then((response) => {
               book = response.data;
               book.loaned = true;
@@ -476,7 +478,7 @@ new Vue({
         },
         getLoans: function() {
           this.loading = true;
-          this.$http.get('/api/loans/')
+          this.$http.get('/api/loans/', {headers: {Authorization: `JWT ${this.jwt}`}})
               .then((response) => {
                 this.loans = response.data;
                 this.loading = false;
@@ -529,14 +531,14 @@ new Vue({
         },
     },
     mounted: function(){
-      if (localStorage.getItem("jwt") === null & this.jwt == ''){
+      if (localStorage.getItem("jwt") === null){
         this.showLogin();
       }
       else{
-        this.showHome();
         this.getBooks();
         this.getLocations();
         this.getLoans();
+        this.showHome();
       }
     }
 })
