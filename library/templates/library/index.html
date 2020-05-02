@@ -40,9 +40,9 @@
     <fieldset class="w3-container vue-form" >
       <!-- {% csrf_token %} -->
       <label>Username</label>
-      <input v-model="newBook.title" class="w3-input" type="text" name="username">
+      <input v-model="credentials.username" class="w3-input" type="text" name="username">
       <label >Password</label>
-      <input v-model="newBook.author" class="w3-input" type="text" name="password">
+      <input v-model="credentials.password" class="w3-input" type="text" name="password">
       <button v-on:click="fetchJWT" class="medium-font w3-button w3-green w3-block w3-hover-black">LOGIN</button>
       <br>
     </fieldset>

@@ -2,6 +2,8 @@ new Vue({
     delimiters: ['{$', '$}'],
     el: '#app',
     data: {
+      credentials: {},
+      username: '',
       jwt: '',
       page_title: 'My Library Manager',
       books: [],
@@ -13,7 +15,8 @@ new Vue({
       loans: [],
       loan: {},
       newLoan: {},
-      homeVisible: true,
+      loginVisible: true,
+      homeVisible: false,
       booksVisible: false,
       allBooksVisible: false,
       newBookVisible: false,
@@ -36,7 +39,18 @@ new Vue({
     methods: {
         // JWT Auth
         async fetchJWT() {
-          this.jwt = document.getElementsByTagName('meta')[0].content
+          this.loading = true;
+          this.$http.post('/auth-jwt/', this.credentials)
+            .then((response) => {
+              this.loading = true;
+              localStorage.jwt = response.data['token']
+              this.jwt = localStorage.jwt;
+              console.log('[#] GOT token: '+this.jwt)
+            })
+            .catch((err) => {
+              this.loading = false;
+              console.log(err);
+            })
         },
         async postWithJWT(url, payload) {
           const res = await fetch(url, {
@@ -57,8 +71,27 @@ new Vue({
           });
         },
         // UI Controllers
+        showLogin: function(){
+          this.loginVible = true;
+          this.homeVisible = false;
+          this.booksVisible = true;
+          this.locationsVisible = false;
+          this.loansVisible = false;
+          this.allBooksVisible = false;
+          this.newBookVisible = false;
+          this.updateBookVisible = false;
+          this.deleteBookVisible = false;
+          this.allLocationsVisible = false;
+          this.newLocationVisible = false;
+          this.updateLocationVisible = false;
+          this.deleteLocationVisible = false;
+          this.allLoansVisible = false;
+          this.newLoanVisible = false;
+          this.returnLoanVisible = false;
+        },
         // Books
         showAllBooks: function(){
+            this.loginVisible = false;
             this.homeVisible = false;
             this.booksVisible = true;
             this.locationsVisible = false;
@@ -78,6 +111,7 @@ new Vue({
         showNewBook: function(){
           this.newBook = {}
 
+          this.loginVisible = false;
           this.homeVisible = false;
           this.booksVisible = true;
           this.locationsVisible = false;
@@ -95,94 +129,99 @@ new Vue({
           this.returnLoanVisible = false;
         },
         showUpdateBook: function(){
-            this.homeVisible = false;
-            this.booksVisible = true;
-            this.locationsVisible = false;
-            this.loansVisible = false;
-            this.allBooksVisible = false;
-            this.newBookVisible = false;
-            this.updateBookVisible = true;
-            this.deleteBookVisible = false;
-            this.allLocationsVisible = false;
-            this.newLocationVisible = false;
-            this.updateLocationVisible = false;
-            this.deleteLocationVisible = false;
-            this.allLoansVisible = false;
-            this.newLoanVisible = false;
-            this.returnLoanVisible = false;
+          this.loginVisible = false;
+          this.homeVisible = false;
+          this.booksVisible = true;
+          this.locationsVisible = false;
+          this.loansVisible = false;
+          this.allBooksVisible = false;
+          this.newBookVisible = false;
+          this.updateBookVisible = true;
+          this.deleteBookVisible = false;
+          this.allLocationsVisible = false;
+          this.newLocationVisible = false;
+          this.updateLocationVisible = false;
+          this.deleteLocationVisible = false;
+          this.allLoansVisible = false;
+          this.newLoanVisible = false;
+          this.returnLoanVisible = false;
         },
         showDeleteBook: function(){
-            this.homeVisible = false;
-            this.booksVisible = true;
-            this.locationsVisible = false;
-            this.loansVisible = false;
-            this.allBooksVisible = false;
-            this.newBookVisible = false;
-            this.updateBookVisible = false;
-            this.deleteBookVisible = true;
-            this.allLocationsVisible = false;
-            this.newLocationVisible = false;
-            this.updateLocationVisible = false;
-            this.deleteLocationVisible = false;
-            this.allLoansVisible = false;
-            this.newLoanVisible = false;
-            this.returnLoanVisible = false;
+          this.loginVisible = false;
+          this.homeVisible = false;
+          this.booksVisible = true;
+          this.locationsVisible = false;
+          this.loansVisible = false;
+          this.allBooksVisible = false;
+          this.newBookVisible = false;
+          this.updateBookVisible = false;
+          this.deleteBookVisible = true;
+          this.allLocationsVisible = false;
+          this.newLocationVisible = false;
+          this.updateLocationVisible = false;
+          this.deleteLocationVisible = false;
+          this.allLoansVisible = false;
+          this.newLoanVisible = false;
+          this.returnLoanVisible = false;
         },
         // Locations
         showAllLocations: function(){
-            this.homeVisible = false;
-            this.booksVisible = false;
-            this.locationsVisible = true;
-            this.loansVisible = false;
-            this.allBooksVisible = false;
-            this.newBookVisible = false;
-            this.updateBookVisible = false;
-            this.deleteBookVisible = false;
-            this.allLocationsVisible = true;
-            this.newLocationVisible = false;
-            this.updateLocationVisible = false;
-            this.deleteLocationVisible = false;
-            this.allLoansVisible = false;
-            this.newLoanVisible = false;
-            this.returnLoanVisible = false;
+          this.loginVisible = false;
+          this.homeVisible = false;
+          this.booksVisible = false;
+          this.locationsVisible = true;
+          this.loansVisible = false;
+          this.allBooksVisible = false;
+          this.newBookVisible = false;
+          this.updateBookVisible = false;
+          this.deleteBookVisible = false;
+          this.allLocationsVisible = true;
+          this.newLocationVisible = false;
+          this.updateLocationVisible = false;
+          this.deleteLocationVisible = false;
+          this.allLoansVisible = false;
+          this.newLoanVisible = false;
+          this.returnLoanVisible = false;
         },
         showNewLocation: function(){
-            this.newLocation = {}
-
-            this.homeVisible = false;
-            this.booksVisible = false;
-            this.locationsVisible = true;
-            this.loansVisible = false;
-            this.allBooksVisible = false;
-            this.newBookVisible = false;
-            this.updateBookVisible = false;
-            this.deleteBookVisible = false;
-            this.allLocationsVisible = false;
-            this.newLocationVisible = true;
-            this.updateLocationVisible = false;
-            this.deleteLocationVisible = false;
-            this.allLoansVisible = false;
-            this.newLoanVisible = false;
-            this.returnLoanVisible = false;
+          this.newLocation = {}
+          this.loginVisible = false;
+          this.homeVisible = false;
+          this.booksVisible = false;
+          this.locationsVisible = true;
+          this.loansVisible = false;
+          this.allBooksVisible = false;
+          this.newBookVisible = false;
+          this.updateBookVisible = false;
+          this.deleteBookVisible = false;
+          this.allLocationsVisible = false;
+          this.newLocationVisible = true;
+          this.updateLocationVisible = false;
+          this.deleteLocationVisible = false;
+          this.allLoansVisible = false;
+          this.newLoanVisible = false;
+          this.returnLoanVisible = false;
         },
         showUpdateLocation: function(){
-            this.homeVisible = false;
-            this.booksVisible = false;
-            this.locationsVisible = true;
-            this.loansVisible = false;
-            this.allBooksVisible = false;
-            this.newBookVisible = false;
-            this.updateBookVisible = false;
-            this.deleteBookVisible = false;
-            this.allLocationsVisible = false;
-            this.newLocationVisible = false;
-            this.updateLocationVisible = true;
-            this.deleteLocationVisible = false;
-            this.allLoansVisible = false;
-            this.newLoanVisible = false;
-            this.returnLoanVisible = false;
+          this.loginVisible = false;
+          this.homeVisible = false;
+          this.booksVisible = false;
+          this.locationsVisible = true;
+          this.loansVisible = false;
+          this.allBooksVisible = false;
+          this.newBookVisible = false;
+          this.updateBookVisible = false;
+          this.deleteBookVisible = false;
+          this.allLocationsVisible = false;
+          this.newLocationVisible = false;
+          this.updateLocationVisible = true;
+          this.deleteLocationVisible = false;
+          this.allLoansVisible = false;
+          this.newLoanVisible = false;
+          this.returnLoanVisible = false;
         },
         showDeleteLocation: function(){
+          this.loginVisible = false;
           this.homeVisible = false;
           this.booksVisible = false;
           this.locationsVisible = true;
@@ -201,25 +240,26 @@ new Vue({
       },
         // Loans
         showAllLoans: function(){
-            this.homeVisible = false;
-            this.booksVisible = false;
-            this.locationsVisible = false;
-            this.loansVisible = true;
-            this.allBooksVisible = false;
-            this.newBookVisible = false;
-            this.updateBookVisible = false;
-            this.deleteBookVisible = false;
-            this.allLocationsVisible = false;
-            this.newLocationVisible = false;
-            this.updateLocationVisible = false;
-            this.deleteLocationVisible = false;
-            this.allLoansVisible = true;
-            this.newLoanVisible = false;
-            this.returnLoanVisible = false;
+          this.loginVisible = false;
+          this.homeVisible = false;
+          this.booksVisible = false;
+          this.locationsVisible = false;
+          this.loansVisible = true;
+          this.allBooksVisible = false;
+          this.newBookVisible = false;
+          this.updateBookVisible = false;
+          this.deleteBookVisible = false;
+          this.allLocationsVisible = false;
+          this.newLocationVisible = false;
+          this.updateLocationVisible = false;
+          this.deleteLocationVisible = false;
+          this.allLoansVisible = true;
+          this.newLoanVisible = false;
+          this.returnLoanVisible = false;
         },
         showNewLoan: function(){
           this.newLoan = {}
-
+          this.loginVisible = false;
           this.homeVisible = false;
           this.booksVisible = false;
           this.locationsVisible = false;
@@ -237,6 +277,7 @@ new Vue({
           this.returnLoanVisible = false;
         },
         showReturnLoan: function(){
+          this.loginVisible = false;
           this.homeVisible = false;
           this.booksVisible = false;
           this.locationsVisible = false;
@@ -467,9 +508,14 @@ new Vue({
         },
     },
     mounted: function(){
-      this.fetchJWT();
-      this.getBooks();
-      this.getLocations();
-      this.getLoans();
+      if (localStorage.getItem("jwt") === null | this.jwt == ''){
+        this.loginVible = true;
+      }
+      else{
+        this.homeVisible = true;
+        this.getBooks();
+        this.getLocations();
+        this.getLoans();
+      }
     }
 })
