@@ -352,7 +352,7 @@ new Vue({
         },
         updateBook: function(book) {
           this.loading = true;
-          this.$http.put(`/api/books/${book.id}/`, book)
+          this.$http.put(`/api/books/${book.id}/`, book, {headers: {Authorization: `JWT ${this.jwt}`}})
               .then((response) => {
                 this.loading = false;
                 this.book = {};
@@ -368,7 +368,7 @@ new Vue({
           confirmation = confirm('Delete book "' + book.title + '" ?');
           if (confirmation == true){
               this.loading = true;
-              this.$http.delete(`/api/books/${book.id}/`)
+              this.$http.delete(`/api/books/${book.id}/`, {headers: {Authorization: `JWT ${this.jwt}`}})
                   .then((response) => {
                     this.loading = false;
                     this.getBooks();
@@ -413,7 +413,7 @@ new Vue({
         },
         updateLocation: function(location) {
           this.loading = true;
-          this.$http.put(`/api/locations/${location.id}/`, location)
+          this.$http.put(`/api/locations/${location.id}/`, location, {headers: {Authorization: `JWT ${this.jwt}`}})
               .then((response) => {
                 this.loading = false;
                 this.location = {};
@@ -429,7 +429,7 @@ new Vue({
           confirmation = confirm('Delete Location "' + location.room + '" ?');
           if (confirmation == true){
               this.loading = true;
-              this.$http.delete(`/api/locations/${location.id}/`)
+              this.$http.delete(`/api/locations/${location.id}/`, {headers: {Authorization: `JWT ${this.jwt}`}})
                   .then((response) => {
                     this.loading = false;
                     this.getLocations();
@@ -497,7 +497,7 @@ new Vue({
           if (confirmation == true){
             this.loading = true;
             // set the book as loaned
-            this.$http.get(`/api/books/${loan.book}/`)
+            this.$http.get(`/api/books/${loan.book}/`, {headers: {Authorization: `JWT ${this.jwt}`}})
               .then((response) => {
                 book = response.data;
                 book.loaned = false;
