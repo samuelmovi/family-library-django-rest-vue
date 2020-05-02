@@ -461,7 +461,7 @@ new Vue({
             .then((response) => {
               book = response.data;
               book.loaned = true;
-              this.$http.put(`/api/books/${book.id}/`, book)
+              this.$http.put(`/api/books/${book.id}/`, book, {headers: {Authorization: `JWT ${this.jwt}`}})
                 .then((response) => {
                   this.getBooks();
                 })
@@ -475,8 +475,8 @@ new Vue({
             console.log(err);
           });          
           // register loan
-          // loan.lender = this.username;
-          this.$http.post('/api/loans/', loan)
+          loan.lender = this.username;
+          this.$http.post('/api/loans/', loan, {headers: {Authorization: `JWT ${this.jwt}`}})
               .then((response) => {
                 this.newLoan = {};
                 this.loading = false;
@@ -513,9 +513,10 @@ new Vue({
               .then((response) => {
                 book = response.data;
                 book.loaned = false;
-                this.$http.put(`/api/books/${book.id}/`, book)
+                this.$http.put(`/api/books/${book.id}/`, book, {headers: {Authorization: `JWT ${this.jwt}`}})
                   .then((response) => {
                     this.getBooks();
+                    this.showAllLoans();
                   })
                   .catch((err) => {
                     this.loading = false;
