@@ -23,15 +23,16 @@ from . import factories
 
 User = get_user_model()
 
+credentials = {
+    'username': 'test_user',
+    'password': 'qwerq32rqwer2q3',
+}
+
 def get_auth_token(client):
-    auth_data = {
-        'username': 'test_user',
-        'password': 'qwerq32rqwer2q3',
-    }
     # create user
-    User.objects.create_user(**auth_data)
+    User.objects.create_user(**credentials)
     # create client
-    response = client.post('/auth-jwt/', auth_data, format='json')
+    response = client.post('/auth-jwt/', credentials, format='json')
     return response.data['token']
 
 # MODELS
@@ -187,7 +188,7 @@ class LocationViewSetTest(APITestCase):
         """Not logged-in user can't read notes
         """
         # Create instances
-        instances = [self.factory() for n in range(random.randint(1,5))]
+        instances = [self.factory(username=credentials['username']) for n in range(random.randint(1,5))]
 
         # Request list
         url = '/api/locations/'
@@ -210,7 +211,7 @@ class LocationViewSetTest(APITestCase):
         """Not logged-in user cannot modify existing note
         """
         # Create instances
-        instance = self.factory()
+        instance = self.factory(username=credentials['username'])
 
         # Query endpoint
         url = f'/api/locations/{instance.pk}/'
@@ -223,7 +224,7 @@ class LocationViewSetTest(APITestCase):
         """Not logged-in user cannot delete existing note
         """
         # Create instances
-        instance = self.factory()
+        instance = self.factory(username=credentials['username'])
 
         # Query endpoint
         url = f'/api/locations/{instance.pk}/'
@@ -236,7 +237,7 @@ class LocationViewSetTest(APITestCase):
         """Regular logged-in user can list location
         """
         # Create instances
-        instances = [self.factory() for n in range(random.randint(1,5))]
+        instances = [self.factory(username=credentials['username']) for n in range(random.randint(1,5))]
 
         # authorize client
         self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
@@ -279,7 +280,7 @@ class LocationViewSetTest(APITestCase):
         """Regular logged-in user can modify existing location
         """
         # Create instances
-        instance = self.factory()
+        instance = self.factory(username=credentials['username'])
 
         # Define request data
         data = {
@@ -307,7 +308,7 @@ class LocationViewSetTest(APITestCase):
         """Regular logged-in user can delete existing location
         """
         # Create instances
-        instance = self.factory()
+        instance = self.factory(username=credentials['username'])
 
         # authorize client
         self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
@@ -333,7 +334,7 @@ class BookViewSetTest(APITestCase):
         """Not logged-in user can't read book
         """
         # Create instances
-        instances = [self.factory() for n in range(random.randint(1,5))]
+        instances = [self.factory(username=credentials['username']) for n in range(random.randint(1,5))]
 
         # Request list
         url = '/api/books/'
@@ -356,7 +357,7 @@ class BookViewSetTest(APITestCase):
         """Not logged-in user cannot modify existing book
         """
         # Create instances
-        instance = self.factory()
+        instance = self.factory(username=credentials['username'])
 
         # Query endpoint
         url = f'/api/books/{instance.pk}/'
@@ -369,7 +370,7 @@ class BookViewSetTest(APITestCase):
         """Not logged-in user cannot delete existing book
         """
         # Create instances
-        instance = self.factory()
+        instance = self.factory(username=credentials['username'])
 
         # Query endpoint
         url = f'/api/books/{instance.pk}/'
@@ -382,7 +383,7 @@ class BookViewSetTest(APITestCase):
         """Regular logged-in user can list book
         """
         # Create instances
-        instances = [self.factory() for n in range(random.randint(1,5))]
+        instances = [self.factory(username=credentials['username']) for n in range(random.randint(1,5))]
 
         # authorize client
         self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
@@ -429,7 +430,7 @@ class BookViewSetTest(APITestCase):
         """Regular logged-in user can modify existing book
         """
         # Create instances
-        instance = self.factory()
+        instance = self.factory(username=credentials['username'])
 
         # Define request data
         data = {
@@ -464,7 +465,7 @@ class BookViewSetTest(APITestCase):
         """Regular logged-in user can delete existing book
         """
         # Create instances
-        instance = self.factory()
+        instance = self.factory(username=credentials['username'])
 
         # authorize client
         self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
@@ -490,7 +491,7 @@ class LoanViewSetTest(APITestCase):
         """Not logged-in user can't read loan
         """
         # Create instances
-        instances = [self.factory() for n in range(random.randint(1,5))]
+        instances = [self.factory(lender=credentials['username']) for n in range(random.randint(1,5))]
 
         # Request list
         url = '/api/loans/'
@@ -513,7 +514,7 @@ class LoanViewSetTest(APITestCase):
         """Not logged-in user cannot modify existing loan
         """
         # Create instances
-        instance = self.factory()
+        instance = self.factory(lender=credentials['username'])
 
         # Query endpoint
         url = f'/api/loans/{instance.pk}/'
@@ -526,7 +527,7 @@ class LoanViewSetTest(APITestCase):
         """Not logged-in user cannot delete existing loan
         """
         # Create instances
-        instance = self.factory()
+        instance = self.factory(lender=credentials['username'])
 
         # Query endpoint
         url = f'/api/loans/{instance.pk}/'
@@ -539,7 +540,7 @@ class LoanViewSetTest(APITestCase):
         """Regular logged-in user can list loan
         """
         # Create instances
-        instances = [self.factory() for n in range(random.randint(1,5))]
+        instances = [self.factory(lender=credentials['username']) for n in range(random.randint(1,5))]
 
         # authorize client
         self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))
@@ -581,7 +582,7 @@ class LoanViewSetTest(APITestCase):
         """Regular logged-in user can modify existing loan
         """
         # Create instances
-        instance = self.factory()
+        instance = self.factory(lender=credentials['username'])
 
         # Define request data
         data = {
@@ -610,7 +611,7 @@ class LoanViewSetTest(APITestCase):
         """Regular logged-in user can delete existing loan
         """
         # Create instances
-        instance = self.factory()
+        instance = self.factory(lender=credentials['username'])
 
         # authorize client
         self.client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(self.token))

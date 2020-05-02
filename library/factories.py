@@ -16,6 +16,7 @@ class LocationFactory(DjangoModelFactory):
     room = FuzzyText(length=80, prefix='room_')
     furniture = FuzzyText(length=80, prefix='furniture_')
     details = FuzzyText(length=80, prefix='details_')
+    username = None
 
 
 class BookFactory(DjangoModelFactory):
@@ -32,7 +33,7 @@ class BookFactory(DjangoModelFactory):
     purchase_date = FuzzyText(length=30, prefix='purchase_date_')
     location = SubFactory(LocationFactory)
     loaned = False
-    username = "test User"
+    username = None
 
 
 class LoanFactory(DjangoModelFactory):
