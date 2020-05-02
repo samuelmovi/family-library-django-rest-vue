@@ -65,7 +65,7 @@
  <!-- BOOKS -->
     <div id="showBooks" v-show="allBooksVisible"  class="w3-margin small-font">
         <h3 align="center">{% trans 'All Books in Library' %}</h3>
-        <table id="books" class="w3-table-all w3-hoverable ">
+        <table id="books" class="w3-table-all w3-hoverable w3-card-4">
           <tr class="w3-cyan">
             <th class="w3-hover-light-blue ">Title</th>
             <th class="w3-hover-light-blue">Author</th>
@@ -92,7 +92,7 @@
           <h2 align="center" >{% trans 'Add New Book' %}</h2>
       </div>
       <div class="w3-container">
-        <fieldset id="addBookFieldset" class="w3-container vue-form" >
+        <fieldset id="addBookFieldset" class="w3-container vue-form w3-card-4" >
             <!-- {% csrf_token %} -->
           <label>Title</label>
           <input v-model="newBook.title" class="w3-input" type="text" name="title">
@@ -125,7 +125,7 @@
           <h2 align="center" >{% trans 'Update Book Info' %}</h2>
       </div>
       <div class="w3-container">
-        <fieldset class="w3-container vue-form">
+        <fieldset class="w3-container vue-form w3-card-4">
             <!-- {% csrf_token %} -->
           <label>Title</label>
           <input v-model="book.title" class="w3-input" type="text" name="title">
@@ -157,7 +157,7 @@
     
     <div id="deleteBooks" v-show="deleteBookVisible"  class="w3-margin small-font">
         <h3 align="center">{% trans 'Delete Books from Library' %}</h3>
-        <table class="w3-table-all w3-hoverable ">
+        <table class="w3-table-all w3-hoverable w3-card-4">
           <tr class="w3-cyan">
             <th class="w3-hover-light-blue ">Title</th>
             <th class="w3-hover-light-blue">Author</th>
@@ -182,7 +182,7 @@
 <!-- LOCATIONS -->
     <div id="showLocations" v-show="allLocationsVisible" class="w3-margin small-font">
       <h3 align="center">{% trans 'All Locations in Library' %}</h3>
-        <table id="locations" class="w3-table-all w3-hoverable ">
+        <table id="locations" class="w3-table-all w3-hoverable w3-card-4">
           <tr class="w3-cyan">
             <th class="w3-hover-light-blue ">Address</th>
             <th class="w3-hover-light-blue">Room</th>
@@ -203,7 +203,7 @@
           <h2 align="center" >{% trans 'Add New Location' %}</h2>
       </div>
       <div class="w3-container">
-        <fieldset class="w3-container vue-form">
+        <fieldset class="w3-container vue-form w3-card-4">
             <!-- {% csrf_token %} -->
           <label>Address</label>
           <input v-model="newLocation.address" class="w3-input" type="text" name="title">
@@ -226,7 +226,7 @@
           <h2 align="center" >{% trans 'Update Location Info' %}</h2>
       </div>
       <div class="w3-container">
-        <fieldset class="w3-container vue-form">
+        <fieldset class="w3-container vue-form w3-card-4">
             <!-- {% csrf_token %} -->
           <label>Address</label>
           <input v-model="location.address" class="w3-input" type="text" name="address">
@@ -246,7 +246,7 @@
     
     <div id="deleteLocations" v-show="deleteLocationVisible"  class="w3-margin small-font">
       <h3 align="center">{% trans 'Delete Location' %}</h3>
-      <table id="locations" class="w3-table-all w3-hoverable ">
+      <table id="locations" class="w3-table-all w3-hoverable w3-card-4">
         <tr class="w3-cyan">
           <th class="w3-hover-light-blue ">Address</th>
           <th class="w3-hover-light-blue">Room</th>
@@ -265,7 +265,7 @@
 <!-- LOANS -->
     <div id="showLoans" v-show="allLoansVisible" class="w3-margin small-font">
       <h3 align="center">{% trans 'All Loans in Library' %}</h3>
-      <table class="w3-table-all w3-hoverable">
+      <table class="w3-table-all w3-hoverable w3-card-4">
           <tr class="w3-cyan">
             <th>Book</th>
             <th>Recipient</th>
@@ -286,7 +286,7 @@
           <h2 align="center" >{% trans 'Register New Loan' %}</h2>
       </div>
       <div class="w3-container">
-        <fieldset class="w3-container vue-form">
+        <fieldset class="w3-container vue-form w3-card-4">
             <!-- {% csrf_token %} -->
           <label>Recipient</label>
           <input v-model="newLoan.borrower" class="w3-input" type="text" name="borrower">
@@ -306,7 +306,7 @@
       <div class="w3-container">
           <h3 align="center" >{% trans 'Register Return with Database' %}</h3>
       </div>
-      <table class="w3-table-all w3-hoverable">
+      <table class="w3-table-all w3-hoverable w3-card-4">
         <tr class="w3-cyan">
           <th>Book</th>
           <th>Recipient</th>
