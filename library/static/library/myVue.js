@@ -45,7 +45,9 @@ new Vue({
               this.loading = true;
               localStorage.jwt = response.data['token']
               this.jwt = localStorage.jwt;
-              console.log('[#] GOT token: '+this.jwt)
+              console.log('[#] GOT token: '+this.jwt);
+              this.username = this.credentials['username'];
+              this.showHome();
             })
             .catch((err) => {
               this.loading = false;
@@ -72,9 +74,9 @@ new Vue({
         },
         // UI Controllers
         showLogin: function(){
-          this.loginVible = true;
+          this.loginVisible = true;
           this.homeVisible = false;
-          this.booksVisible = true;
+          this.booksVisible = false;
           this.locationsVisible = false;
           this.loansVisible = false;
           this.allBooksVisible = false;
@@ -85,6 +87,25 @@ new Vue({
           this.newLocationVisible = false;
           this.updateLocationVisible = false;
           this.deleteLocationVisible = false;
+          this.allLoansVisible = false;
+          this.newLoanVisible = false;
+          this.returnLoanVisible = false;
+        },
+        // Home
+        showHome: function(){
+          this.loginVisible = false;
+          this.homeVisible = true;
+          this.booksVisible = false;
+          this.allBooksVisible = false;
+          this.newBookVisible = false;
+          this.updateBookVisible = false;
+          this.deleteBookVisible = false;
+          this.locationsVisible = false;
+          this.allLocationsVisible = false;
+          this.newLocationVisible = false;
+          this.updateLocationVisible = false;
+          this.deleteLocationVisible = false;
+          this.loansVisible = false;
           this.allLoansVisible = false;
           this.newLoanVisible = false;
           this.returnLoanVisible = false;
@@ -509,7 +530,7 @@ new Vue({
     },
     mounted: function(){
       if (localStorage.getItem("jwt") === null | this.jwt == ''){
-        this.loginVible = true;
+        this.loginVisible = true;
       }
       else{
         this.homeVisible = true;
