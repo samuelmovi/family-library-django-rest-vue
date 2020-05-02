@@ -46,13 +46,7 @@ class LocationTestCase (TestCase):
     }
     
     def setUp(self):
-        models.Location.objects.create(
-            address=self.test_fields['address'],
-            room=self.test_fields['room'],
-            furniture=self.test_fields['furniture'],
-            details=self.test_fields['details'],
-            username=self.test_fields['username'],
-        )
+        models.Location.objects.create(**self.test_fields)
     
     def test_content(self):
         location = models.Location.objects.get(address="test address")
@@ -69,7 +63,6 @@ class BookTestCase(TestCase):
         'isbn': 'test isbn',
         'publish_date': 'test publish_date',
         'purchase_date': 'test purchase_date',
-        'location_id': None,
         'loaned': False,
         'username': 'test username',
     }
@@ -80,31 +73,31 @@ class BookTestCase(TestCase):
             room='room',
             furniture='furniture',
             details='details',
-            created=timezone.now(),
-            username='username',
+            username='test username',
         )
-        
-        models.Book.objects.create(
-            title=self.test_fields['title'],
-            author=self.test_fields['author'],
-            genre=self.test_fields['genre'],
-            publisher=self.test_fields['publisher'],
-            isbn=self.test_fields['isbn'],
-            publish_date=self.test_fields['publish_date'],
-            purchase_date=self.test_fields['purchase_date'],
-            location=models.Location.objects.get(address='address'),
-            loaned=self.test_fields['loaned'],
-            username=self.test_fields['username'],
-        )
+        self.test_fields['location_id'] = models.Location.objects.get(address='address').pk
+        models.Book.objects.create(**self.test_fields)
         
     def test_content(self):
         book = models.Book.objects.get(title="test title")
-        self.test_fields['location_id'] = models.Location.objects.get(address='address').id
         for field in self.test_fields:
             self.assertEqual(book.__dict__[field], self.test_fields[field])
 
 
 class LoanTestCase(TestCase):
+
+    book_data = {
+        'title': 'test title',
+        'author': 'test author',
+        'genre': 'test genre',
+        'publisher': 'test publisher',
+        'isbn': 'test isbn',
+        'publish_date': 'test publish_date',
+        'purchase_date': 'test purchase_date',
+        'loaned': False,
+        'username': 'test username',
+    }
+
     test_fields = {
         'book_id': '',
         'lender': 'test lender',
