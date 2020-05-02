@@ -6,9 +6,9 @@ from .viewsets import LocationViewSet, BookViewSet, LoanViewSet
 
 router = routers.DefaultRouter()
 
-router.register(r'locations', LocationViewSet)
-router.register(r'books', BookViewSet)
-router.register(r'loans', LoanViewSet)
+router.register(r'locations', LocationViewSet, basename='locations')
+router.register(r'books', BookViewSet, basename='books')
+router.register(r'loans', LoanViewSet, basename='loans')
 
 app_name = 'library'
 

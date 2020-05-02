@@ -29,7 +29,5 @@ urlpatterns = [
     path('auth-jwt-refresh/', refresh_jwt_token),
     path('auth-jwt-verify/', verify_jwt_token),
     path('admin/', admin.site.urls),
-    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),     # For built-in tempalte use
-    # path('login/', TemplateView.as_view(template_name='library/login.html')),
     path('', default, name="default")
 ]
