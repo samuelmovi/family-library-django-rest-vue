@@ -64,7 +64,7 @@
     </div>
  <!-- BOOKS -->
     <div id="showBooks" v-show="allBooksVisible"  class="w3-margin small-font">
-        <h3 align="center">All Books in Library</h3>
+        <h3 align="center">{% trans 'All Books in Library' %}</h3>
         <table id="books" class="w3-table-all w3-hoverable ">
           <tr class="w3-cyan">
             <th class="w3-hover-light-blue ">Title</th>
@@ -87,9 +87,9 @@
         </table>
     </div>
     
-    <div id="newBook" v-show="newBookVisible"  class="w3-container small-font w3-teal">
+    <div id="newBook" v-show="newBookVisible"  class="w3-container small-font">
       <div class="w3-container">
-          <h2 align="center" >{% trans 'Add Book to Database' %}</h2>
+          <h2 align="center" >{% trans 'Add New Book' %}</h2>
       </div>
       <div class="w3-container">
         <fieldset id="addBookFieldset" class="w3-container vue-form" >
@@ -120,7 +120,7 @@
       <br>
     </div>
     
-    <div id="updateBook" v-show="updateBookVisible"  class="w3-container small-font w3-teal">
+    <div id="updateBook" v-show="updateBookVisible"  class="w3-container small-font">
       <div class="w3-container">
           <h2 align="center" >{% trans 'Update Book Info' %}</h2>
       </div>
@@ -156,7 +156,7 @@
     </div>
     
     <div id="deleteBooks" v-show="deleteBookVisible"  class="w3-margin small-font">
-        <h3 align="center">Delete Books from Library</h3>
+        <h3 align="center">{% trans 'Delete Books from Library' %}</h3>
         <table class="w3-table-all w3-hoverable ">
           <tr class="w3-cyan">
             <th class="w3-hover-light-blue ">Title</th>
@@ -181,6 +181,7 @@
 
 <!-- LOCATIONS -->
     <div id="showLocations" v-show="allLocationsVisible" class="w3-margin small-font">
+      <h3 align="center">{% trans 'All Locations in Library' %}</h3>
         <table id="locations" class="w3-table-all w3-hoverable ">
           <tr class="w3-cyan">
             <th class="w3-hover-light-blue ">Address</th>
@@ -197,9 +198,9 @@
         </table>
     </div>
     
-    <div id="newLocation" v-show="newLocationVisible"  class="w3-container small-font w3-teal">
+    <div id="newLocation" v-show="newLocationVisible"  class="w3-container small-font">
       <div class="w3-container">
-          <h2 align="center" >{% trans 'Add Location to Database' %}</h2>
+          <h2 align="center" >{% trans 'Add New Location' %}</h2>
       </div>
       <div class="w3-container">
         <fieldset class="w3-container vue-form">
@@ -220,7 +221,7 @@
       <br>
     </div>
     
-    <div id="updateLocation" v-show="updateLocationVisible"  class="w3-container small-font w3-teal">
+    <div id="updateLocation" v-show="updateLocationVisible"  class="w3-container small-font">
       <div class="w3-container">
           <h2 align="center" >{% trans 'Update Location Info' %}</h2>
       </div>
@@ -244,7 +245,7 @@
     </div>
     
     <div id="deleteLocations" v-show="deleteLocationVisible"  class="w3-margin small-font">
-      <h3 align="center">Delete Location from Library</h3>
+      <h3 align="center">{% trans 'Delete Location' %}</h3>
       <table id="locations" class="w3-table-all w3-hoverable ">
         <tr class="w3-cyan">
           <th class="w3-hover-light-blue ">Address</th>
@@ -263,6 +264,7 @@
 
 <!-- LOANS -->
     <div id="showLoans" v-show="allLoansVisible" class="w3-margin small-font">
+      <h3 align="center">{% trans 'All Loans in Library' %}</h3>
       <table class="w3-table-all w3-hoverable">
           <tr class="w3-cyan">
             <th>Book</th>
@@ -279,9 +281,9 @@
       </table>
     </div>
 
-    <div id="newLoan" v-show="newLoanVisible"  class="w3-container small-font w3-teal">
+    <div id="newLoan" v-show="newLoanVisible"  class="w3-container small-font">
       <div class="w3-container">
-          <h2 align="center" >{% trans 'Register Loan with Database' %}</h2>
+          <h2 align="center" >{% trans 'Register New Loan' %}</h2>
       </div>
       <div class="w3-container">
         <fieldset class="w3-container vue-form">
@@ -300,9 +302,9 @@
       <br>
     </div>
 
-    <div id="returnLoan" v-show="returnLoanVisible"  class="w3-container small-font w3-teal">
+    <div id="returnLoan" v-show="returnLoanVisible"  class="w3-container small-font">
       <div class="w3-container">
-          <h2 align="center" >{% trans 'Register Return with Database' %}</h2>
+          <h3 align="center" >{% trans 'Register Return with Database' %}</h3>
       </div>
       <table class="w3-table-all w3-hoverable">
         <tr class="w3-cyan">
