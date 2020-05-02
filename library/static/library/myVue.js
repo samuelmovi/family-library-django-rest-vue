@@ -3,7 +3,7 @@ new Vue({
     el: '#app',
     data: {
       credentials: {},
-      username: '',
+      username: null,
       jwt: '',
       page_title: 'My Library Manager',
       books: [],

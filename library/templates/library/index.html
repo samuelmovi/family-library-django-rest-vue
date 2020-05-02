@@ -20,7 +20,7 @@
 
 <div id="app">
   <header>
-    <a class="user-name w3-cell w3-btn" v-on:click="showHome" href="">{$ username $}</a>
+    <a v-if="username" class="user-name w3-cell w3-btn" v-on:click="showHome" href="">{$ username $}</a>
     <div>{$ page_title $}</div>    
   </header>
   <!-- NAVBAR -->
