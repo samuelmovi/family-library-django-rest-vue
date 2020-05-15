@@ -6,9 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 - check book loaned status before loaning
-- make sure tabled don't leave page when shrinking width
+- make sure tables don't leave page when shrinking width
 - make tests for user data separation
-
+- add notification feed about site activity user's to home page 
 
 ## 2020-05-02
 ### Fixed

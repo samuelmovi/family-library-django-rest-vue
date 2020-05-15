@@ -17,9 +17,12 @@ from django.contrib import admin
 from django.contrib.auth import views
 from django.urls import path, include
 from django.views.generic import TemplateView, RedirectView
+
 from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_jwt.views import verify_jwt_token
+
+import notifications.urls
 
 from library.viewsets import default
 
@@ -29,5 +32,7 @@ urlpatterns = [
     path('auth-jwt-refresh/', refresh_jwt_token),
     path('auth-jwt-verify/', verify_jwt_token),
     path('admin/', admin.site.urls),
-    path('', default, name="default")
+    path('', default, name="default"),
+
+    path('inbox/notifications/', include(notifications.urls, namespace='notifications')),
 ]

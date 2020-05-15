@@ -1,5 +1,8 @@
 from django.db import models
+from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractBaseUser
+
+from notifications.signals import notify
 # Create your models here.
 
 
@@ -32,6 +35,7 @@ class Book(models.Model):
     created = models.DateTimeField('date created', auto_now_add=True)
     modified = models.DateTimeField('date modified', null=True, auto_now=True)
     username = models.CharField(max_length=100, null=True)
+    owner = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='book_owner', null=True)
     
     def __str__(self):
         return f'{self.title}'
@@ -47,3 +51,19 @@ class Loan(models.Model):
     def __str__(self):
         return f'{self.book} / {self.borrower} / {self.loan_date}'
 
+
+def book_activity_handler(sender, instance, created, **kwargs):
+    import pdb; pdb.set_trace()
+    owner = User.objects.get(name=instance.username)
+    notify.send(sender, actor=instance.username, verb='added a new book', recipient=owner)
+    # notify.send(instance, verb='was added')
+
+def location_activity_handler(sender, instance, created, **kwargs):
+    notify.send(instance, verb='was added')
+
+def loan_activity_handler(sender, instance, created, **kwargs):
+    notify.send(sender, instance, verb='was loaned')
+
+post_save.connect(book_activity_handler, sender=Book)
+post_save.connect(location_activity_handler, sender=Location)
+post_save.connect(loan_activity_handler, sender=Book)
