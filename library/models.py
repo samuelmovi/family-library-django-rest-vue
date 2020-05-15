@@ -1,13 +1,38 @@
 from django.db import models
 from django.db.models.signals import post_save
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 from notifications.signals import notify
 # Create your models here.
 
 
+# User Manager
+class CustomUserManager(BaseUserManager):
+
+    def create(self, username, password, **extra_fields):
+        return self.create_user(username, password, **extra_fields)
+
+    def create_user(self, username, password, **extra_fields):
+        if not username:
+            raise ValueError(_('The username must be set'))
+        user = self.model(username=username, **extra_fields)
+        user.set_password(password)
+        user.save()
+        return user
+
+    def create_superuser(self, username, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
+        return self.create_user(username, password, **extra_fields)
+
+
 class User(AbstractBaseUser):
-    pass
+    objects = CustomUserManager()
+    REQUIRED_FIELDS = []
+
+    def __str__(self):
+        return f'{self.username}'
 
 
 class Location(models.Model):
