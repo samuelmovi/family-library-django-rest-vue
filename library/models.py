@@ -28,7 +28,12 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
+
+    username = models.CharField(max_length=100, unique=True)
+    email = None
+
     objects = CustomUserManager()
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
 
     def __str__(self):
@@ -78,17 +83,20 @@ class Loan(models.Model):
 
 
 def book_activity_handler(sender, instance, created, **kwargs):
-    import pdb; pdb.set_trace()
-    owner = User.objects.get(name=instance.username)
-    notify.send(sender, actor=instance.username, verb='added a new book', recipient=owner)
-    # notify.send(instance, verb='was added')
+    #import pdb; pdb.set_trace()
+    try:
+        owner = User.objects.filter(username=instance.username)[0]
+        notify.send(instance, verb='was added')
+    except:
+        # fail gracefully??
+        pass
 
 def location_activity_handler(sender, instance, created, **kwargs):
     notify.send(instance, verb='was added')
 
 def loan_activity_handler(sender, instance, created, **kwargs):
-    notify.send(sender, instance, verb='was loaned')
+    notify.send(instance, verb='was loaned')
 
 post_save.connect(book_activity_handler, sender=Book)
 post_save.connect(location_activity_handler, sender=Location)
-post_save.connect(loan_activity_handler, sender=Book)
+post_save.connect(loan_activity_handler, sender=Loan)

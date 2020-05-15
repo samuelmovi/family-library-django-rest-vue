@@ -1,17 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
-from django.http import HttpResponseNotAllowed
+from django.views.decorators.http import require_GET
 
 from rest_framework import viewsets, permissions
-from rest_framework_jwt.settings import api_settings
-from rest_framework.response import Response
 
 from . import models
 from . import serializers
 
 class LocationViewSet(viewsets.ModelViewSet):
-    # queryset = Location.objects.all()
     serializer_class = serializers.LocationSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -20,7 +17,6 @@ class LocationViewSet(viewsets.ModelViewSet):
 
 
 class BookViewSet(viewsets.ModelViewSet):
-    #queryset = Book.objects.all()
     serializer_class = serializers.BookSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -30,7 +26,6 @@ class BookViewSet(viewsets.ModelViewSet):
 
 
 class LoanViewSet(viewsets.ModelViewSet):
-    queryset =models.Loan.objects.all()
     serializer_class = serializers.LoanSerializer
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get', 'post', 'put', 'head']
@@ -39,7 +34,7 @@ class LoanViewSet(viewsets.ModelViewSet):
         return models.Loan.objects.filter(lender=self.request.user.username).all()
 
 
-# @login_required(login_url='/login/')
+@require_GET
 def default(request):
     '''
     This view returns the main vuejs-enabled template
