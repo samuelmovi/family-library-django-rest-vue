@@ -1,8 +1,7 @@
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete, pre_save
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
-from notifications.signals import notify
 # Create your models here.
 
 
@@ -68,7 +67,7 @@ class Book(models.Model):
     owner = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='book_owner', null=True)
     
     def __str__(self):
-        return f'{self.title}'
+        return f'{self.title}, by {self.author}'
 
 
 class Loan(models.Model):
@@ -81,22 +80,76 @@ class Loan(models.Model):
     def __str__(self):
         return f'{self.book} / {self.borrower} / {self.loan_date}'
 
+class Activity(models.Model):
 
-def book_activity_handler(sender, instance, created, **kwargs):
-    #import pdb; pdb.set_trace()
+    actor = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='activity')
+    verb = models.CharField(max_length=100)
+    book = models.ForeignKey(Book, on_delete=models.DO_NOTHING, related_name='activity', null=True)
+    location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, related_name='activity', null=True)
+    recipient = models.CharField(max_length=100, null=True)
+
+    def __str__(self):
+        if recipient is not None:
+            return f'{actor} loaned {book}, to {recipient}' 
+        if book is not None and location is not None:
+            return f'{actor} moved {book}, to {location}'
+        if book is not None:
+            return f'{actor} {verb} {book}'
+        if location is not None:
+            return f'{actor} {verb} {location}'
+
+def book_save_handler(sender, instance, created, **kwargs):
     try:
         owner = User.objects.filter(username=instance.username)[0]
-        notify.send(instance, verb='was added')
+        Activity.objects.create(actor=owner, verb='added', book=instance)
     except:
         # fail gracefully??
         pass
 
-def location_activity_handler(sender, instance, created, **kwargs):
-    notify.send(instance, verb='was added')
+def book_deletion_handler(sender, instance, created, **kwargs):
+    try:
+        owner = User.objects.filter(username=instance.username)[0]
+        Activity.objects.create(actor=owner, verb='deleted', book=instance)
+    except:
+        # fail gracefully??
+        pass
 
-def loan_activity_handler(sender, instance, created, **kwargs):
-    notify.send(instance, verb='was loaned')
+def location_save_handler(sender, instance, created, **kwargs):
+    try:
+        owner = User.objects.filter(username=instance.username)[0]
+        Activity.objects.create(actor=owner, verb='added', location=instance)
+    except:
+        # fail gracefully??
+        pass
 
-post_save.connect(book_activity_handler, sender=Book)
+def location_deletion_handler(sender, instance, created, **kwargs):
+    try:
+        owner = User.objects.filter(username=instance.username)[0]
+        Activity.objects.create(actor=owner, verb='deleted', location=instance)
+    except:
+        # fail gracefully??
+        pass
+
+# def loan_save_handler(sender, instance, created, **kwargs):
+#     try:
+#         owner = User.objects.filter(username=instance.username)[0]
+#         book = Book.objects.filter(id = instance.book.id)
+#         Activity.objects.create(actor=owner, verb='loaned', book=book, recipient=instance.recipient)
+#     except:
+#         # fail gracefully??
+#         pass
+
+# def loan_returned_handler(sender, instance, created, **kwargs):
+#     try:
+#         owner = User.objects.filter(username=instance.username)[0]
+#         book = Book.objects.filter(id = instance.book.id)
+#         Activity.objects.create(actor=owner, verb='returned', book=book, recipient=instance.recipient)
+#     except:
+#         # fail gracefully??
+#         pass
+
+post_save.connect(book_save_handler, sender=Book)
+post_delete.connect(book_deletion_handler, sender=Book)
+
 post_save.connect(location_activity_handler, sender=Location)
 post_save.connect(loan_activity_handler, sender=Loan)

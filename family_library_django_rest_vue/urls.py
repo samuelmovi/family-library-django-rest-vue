@@ -22,7 +22,6 @@ from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_jwt.views import verify_jwt_token
 
-import notifications.urls
 
 from library.viewsets import default
 
@@ -30,7 +29,6 @@ from .auth import auth_jwt
 
 
 urlpatterns = [
-    path('notifications/', include(notifications.urls, namespace='notifications')),
     path('api/', include('library.urls')),
     # path('auth-jwt/', obtain_jwt_token),
     path('auth-jwt/', auth_jwt),
