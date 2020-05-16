@@ -6,6 +6,7 @@ new Vue({
       username: null,
       jwt: '',
       page_title: 'My Library Manager',
+      activities: [],
       books: [],
       book: {},
       newBook: {},
@@ -332,6 +333,21 @@ new Vue({
           this.newLoanVisible = false;
           this.returnLoanVisible = true;
         },
+        // Get Activities
+        getActivities: function() {
+          this.loading = true;
+          this.$http.get('/api/activities/', {headers: {Authorization: `JWT ${this.jwt}`}})
+              .then((response) => {
+                this.activities = response.data;
+                // to trim down the activities list
+                // this.activities = this.activities.slice(this.activities.length - 10, this.activities.length)
+                this.loading = false;
+              })
+              .catch((err) => {
+               this.loading = false;
+               console.log(err);
+              })
+        },
         // CRUD methods
         // Books
         addBook: function() {
@@ -359,7 +375,7 @@ new Vue({
                this.loading = false;
                console.log(err);
               })
-         },
+        },
         bookDetails: function(book){
             this.book = book;
             this.showUpdateBook();
@@ -556,6 +572,7 @@ new Vue({
         this.getBooks();
         this.getLocations();
         this.getLoans();
+        this.getActivities();
         this.showHome();
       }
     }

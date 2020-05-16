@@ -89,6 +89,10 @@ class Activity(models.Model):
     location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, related_name='activity', null=True)
     recipient = models.CharField(max_length=100, null=True)
 
+    @property
+    def summary(self):
+        return self.__str__()
+
     def __str__(self):
         if self.recipient is not None:
             return f'{self.actor} loaned {self.book}, to {self.recipient}' 

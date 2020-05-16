@@ -45,23 +45,30 @@
     </fieldset>
     <br>
   </div>
-    
-    <div id="home" v-show="homeVisible" class=" home w3-container w3-card-4 w3-margin-top">
-        <div class="user-info" >
-        <p >{% trans 'Hello ' %}{$ username $}</p>
-        <p>{% trans 'Summary of your book collection' %}:</p>
-        <ul>
-            <li>{% trans 'Total books' %}: {$ books.length $}</li>
-            <li>{% trans 'Locations' %}: {$ locations.length $}</li>
-            <li>{% trans 'Pending loans' %}: {$ loans.length $}</li>
-        </ul>
-        <br/>
-        </div>
-        <br>
-        <button v-on:click="logout" class="logout" >{% trans 'Log out' %}</button>
-        <br>
-        <br>
+  
+  <!-- HOME -->
+  <div id="home" v-show="homeVisible" class=" home w3-container w3-card-4 w3-margin-top">
+    <div class="user-info" >
+    <p>{% trans 'Hello ' %}{$ username $}</p>
+    <p>{% trans 'Summary of your book collection' %}:</p>
+    <ul>
+        <li>{% trans 'Total books' %}: {$ books.length $}</li>
+        <li>{% trans 'Locations' %}: {$ locations.length $}</li>
+        <li>{% trans 'Pending loans' %}: {$ loans.length $}</li>
+    </ul>
+    <br/>
     </div>
+    <div class="user-info">
+      <p>Site activity:</p>
+      <ul>
+        <li v-for="activity in activities">{$ activity.summary $}</li>
+    </ul>
+    </div>
+    <br>
+    <button v-on:click="logout" class="logout" >{% trans 'Log out' %}</button>
+    <br>
+    <br>
+  </div>
  <!-- BOOKS -->
     <div id="showBooks" v-show="allBooksVisible"  class="w3-margin small-font">
         <h3 align="center">{% trans 'All Books in Library' %}</h3>

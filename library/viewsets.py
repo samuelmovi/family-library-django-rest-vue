@@ -36,6 +36,7 @@ class LoanViewSet(viewsets.ModelViewSet):
 class ActivityViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ActivitySerializer
     permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ['get', 'head']
 
     def get_queryset(self):
         return models.Activity.objects.all()
