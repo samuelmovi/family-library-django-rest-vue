@@ -8,12 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - check book loaned status before loaning
 - make sure tables don't leave page when shrinking width
 - make tests for user data separation
-- add notification feed about site activity user's to home page 
 
 
 ## 2020-05-16
-- Fixed post load check for jwt
+### Fixed
+- logout functionality due to post load check for jwt
 
+### Added
+- notification feed about site activity user's to home page 
 
 ## 2020-05-02
 ### Fixed
