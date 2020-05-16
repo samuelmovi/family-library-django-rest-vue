@@ -30,8 +30,8 @@ from .auth import auth_jwt
 
 urlpatterns = [
     path('api/', include('library.urls')),
-    # path('auth-jwt/', obtain_jwt_token),
-    path('auth-jwt/', auth_jwt),
+    path('auth-jwt/', obtain_jwt_token),
+    # path('auth-jwt/', auth_jwt),
     path('auth-jwt-refresh/', refresh_jwt_token),
     path('auth-jwt-verify/', verify_jwt_token),
     path('admin/', admin.site.urls),
