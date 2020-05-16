@@ -151,5 +151,5 @@ def location_deletion_handler(sender, instance, created, **kwargs):
 post_save.connect(book_save_handler, sender=Book)
 post_delete.connect(book_deletion_handler, sender=Book)
 
-post_save.connect(location_activity_handler, sender=Location)
-post_save.connect(loan_activity_handler, sender=Loan)
+post_save.connect(location_save_handler, sender=Location)
+post_delete.connect(location_deletion_handler, sender=Loan)
