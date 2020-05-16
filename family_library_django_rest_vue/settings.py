@@ -89,6 +89,8 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'library.User'
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
