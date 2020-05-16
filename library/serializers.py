@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Location, Book, Loan
+from .models import Location, Book, Loan, Activity
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -17,5 +17,10 @@ class BookSerializer(serializers.ModelSerializer):
 class LoanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Loan
+        fields = '__all__'
+
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
         fields = '__all__'
 

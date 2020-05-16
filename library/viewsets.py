@@ -24,7 +24,6 @@ class BookViewSet(viewsets.ModelViewSet):
         return models.Book.objects.filter(username=self.request.user.username).all()
 
 
-
 class LoanViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.LoanSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -32,6 +31,14 @@ class LoanViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return models.Loan.objects.filter(lender=self.request.user.username).all()
+
+
+class ActivityViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.ActivitySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return models.Activity.objects.all()
 
 
 @require_GET
