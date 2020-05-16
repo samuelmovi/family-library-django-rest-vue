@@ -90,19 +90,19 @@ class Activity(models.Model):
     recipient = models.CharField(max_length=100, null=True)
 
     def __str__(self):
-        if recipient is not None:
-            return f'{actor} loaned {book}, to {recipient}' 
-        if book is not None and location is not None:
-            return f'{actor} moved {book}, to {location}'
-        if book is not None:
-            return f'{actor} {verb} {book}'
-        if location is not None:
-            return f'{actor} {verb} {location}'
+        if self.recipient is not None:
+            return f'{self.actor} loaned {self.book}, to {self.recipient}' 
+        if self.book is not None and self.location is not None:
+            return f'{self.actor} moved {self.book}, to {lself.ocation}'
+        if self.book is not None:
+            return f'{self.actor} {self.verb} {self.book}'
+        if self.location is not None:
+            return f'{self.actor} {self.verb} {self.location}'
 
 def book_save_handler(sender, instance, created, **kwargs):
     try:
         owner = User.objects.filter(username=instance.username)[0]
-        Activity.objects.create(actor=owner, verb='added', book=instance)
+        Activity.objects.create(actor=owner, verb='added book', book=instance)
     except:
         # fail gracefully??
         pass
@@ -118,7 +118,7 @@ def book_deletion_handler(sender, instance, created, **kwargs):
 def location_save_handler(sender, instance, created, **kwargs):
     try:
         owner = User.objects.filter(username=instance.username)[0]
-        Activity.objects.create(actor=owner, verb='added', location=instance)
+        Activity.objects.create(actor=owner, verb='added new location', location=instance)
     except:
         # fail gracefully??
         pass
