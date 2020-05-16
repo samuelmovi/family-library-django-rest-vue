@@ -67,6 +67,7 @@ new Vue({
           this.username = null;
           this.credentials = {};
           this.jwt = '';
+          localStorage.setItem('jwt', null);
 
           // delete books, locations, loans
           this.books = [];
@@ -546,7 +547,7 @@ new Vue({
         },
     },
     mounted: function(){
-      if (localStorage.getItem("jwt") === null){
+      if (localStorage.getItem("jwt") === 'null'){
         this.showLogin();
       }
       else{
